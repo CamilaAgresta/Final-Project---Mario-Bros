@@ -11,8 +11,22 @@ Final Project: Super Mario Bros
 Main code V01
 """
 
+### COMANDOS PARA IR SUBIENDO A GITHUB
+## Ejecutar en la terminal
+
+# git remote -v
+
+# git pull origin main  (traer los cambios más recientes desde GitHub a tu carpeta local)
+
+# git add .
+# git commit -m "mensaje corto explicando el cambio"
+
+# git push origin main
+
+####################################
+
 import constants
-from board_V01 import Board
+from board_V02 import Board
 
 # Creating the board object will also initialize pyxel
 board = Board(constants.WIDTH, constants.HIGH)

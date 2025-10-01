@@ -26,17 +26,19 @@ class Board:
         # Setting the attributes
         self.width = width
         self.height = height
-        # The board will contain a Character in the middle of it
+
+        # Start coordinates of the elements
         self.mario = Mario(constants.MARIO_START[0], constants.MARIO_START[1])
 
-        # In this init we also initialize pyxel
-        pyxel.init(self.width, self.height, title="Mario Bros")
-        # Loading the pyxres file with the images (asegúrate de que exista)
-        pyxel.load("assets/example.pyxres")
+        # Initialization pyxel
+        pyxel.init(self.width, self.height, title = "Mario Bros")
+        # Loading the pyxres file with the images
+        # AGREGAR CARPETAS DIFERENTES DENTRO DE ASSATS PARA PERSONAJES - FONDO - LABERINTO
+        pyxel.load("assets/characters.pyxres")
+
         # Running the game
         pyxel.run(self.update, self.draw)
 
-    # --- OJO: estos métodos van al MISMO nivel de indentación que __init__ ---
     def update(self):
         """Executed every frame: input & logic."""
         # To exit the game

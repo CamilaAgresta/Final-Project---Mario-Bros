@@ -24,6 +24,11 @@ Main code V01
 # git push origin main
 
 ####################################
+# Ejecutar cada vez que quiera modificar el/los dibujos
+# pyxel edit assets/xxxx (general)
+# personajes -> pyxel edit assets/characters.pyxres
+
+####################################
 
 import constants
 from board_V02 import Board

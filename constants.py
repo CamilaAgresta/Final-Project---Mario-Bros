@@ -16,4 +16,4 @@ HIGH = 224
 
 #Mario
 MARIO_START = (WIDTH//2, HIGH//2)
-MARIO_SPRITE = (0, 0, 0, 16, 16)
+MARIO_SPRITE = (0, 0, 0, 12, 16) #12 de ancho x 16 de alto, Mario ocupa el primer cuadrante

@@ -13,7 +13,9 @@ Board V02
 
 import pyxel
 import constants
-from mario_V01 import Mario
+#from mario_V01 import Mario
+from character import Character
+from mario_V02 import Mario
 
 class Board:
     """This class contains a simple board"""

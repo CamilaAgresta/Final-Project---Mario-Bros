@@ -16,6 +16,7 @@ import constants
 #from mario_V01 import Mario
 from character import Character
 from mario_V02 import Mario
+from background import Background
 
 class Board:
     """This class contains a simple board"""
@@ -31,12 +32,14 @@ class Board:
 
         # Start coordinates of the elements
         self.mario = Mario(constants.MARIO_START[0], constants.MARIO_START[1])
+        self.background = Background(constants.BACKGROUND_START[0], constants.BACKGROUND_START[1])
 
         # Initialization pyxel
         pyxel.init(self.width, self.height, title = "Mario Bros")
         # Loading the pyxres file with the images
         # AGREGAR CARPETAS DIFERENTES DENTRO DE ASSATS PARA PERSONAJES - FONDO - LABERINTO
         pyxel.load("assets/characters.pyxres")
+        #pyxel.load("assets/fondo.pyxres")
 
         # Running the game
         pyxel.run(self.update, self.draw)
@@ -57,5 +60,8 @@ class Board:
         """Executed every frame: render."""
         # Erasing the previous screen
         pyxel.cls(0)
+        # Dibuja el fondo PRIMERO (desde Banco 1)
+        pyxel.blt(self.background.x, self.background.y, *self.background.sprite)
         # Drawing Mario (x, y, *sprite)
         pyxel.blt(self.mario.x, self.mario.y, *self.mario.sprite)
+

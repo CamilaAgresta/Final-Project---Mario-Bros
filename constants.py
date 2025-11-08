@@ -14,6 +14,10 @@ Constants
 WIDTH = 256
 HIGH = 224
 
+# Fondo
+BACKGROUND_START = (0, 0)
+BACKGROUND_SPRITE = (1, 0, 0, 248, 76)
+
 #Mario
 MARIO_START = (WIDTH//2, HIGH//2)
 MARIO_SPRITE = (0, 0, 0, 12, 16) #12 de ancho x 16 de alto, Mario ocupa el primer cuadrante

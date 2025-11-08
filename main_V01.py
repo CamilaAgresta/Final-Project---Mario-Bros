@@ -28,6 +28,8 @@ Main code V01
 # pyxel edit assets/xxxx (general)
 # personajes -> pyxel edit assets/characters.pyxres
 
+# pyxel edit assets/fondo
+
 ####################################
 
 import constants

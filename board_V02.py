@@ -50,11 +50,11 @@ class Board:
         if pyxel.btnp(pyxel.KEY_Q):
             pyxel.quit()
 
-        # Horizontal movement (solo Mario)
-        if pyxel.btn(pyxel.KEY_RIGHT):
-            self.mario.move('right', self.width)
-        if pyxel.btn(pyxel.KEY_LEFT):
-            self.mario.move('left', self.width)
+        # Vertical movement (solo Mario)
+        if pyxel.btnp(pyxel.KEY_UP):
+            self.mario.move_vertical('up')
+        if pyxel.btnp(pyxel.KEY_DOWN):
+            self.mario.move_vertical('down')
 
     def draw(self):
         """Executed every frame: render."""

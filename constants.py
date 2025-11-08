@@ -11,13 +11,16 @@ Final Project: Super Mario Bros
 Constants
 """
 # Dimension of the screen
-WIDTH = 256
-HIGH = 224
+WIDTH = 288
+HIGH = 118
 
 # Fondo
-BACKGROUND_START = (0, 0)
-BACKGROUND_SPRITE = (1, 0, 0, 248, 76)
+BACKGROUND_START = (16,16)
+BACKGROUND_SPRITE = (1, 0, 0, 256, 100)
 
 #Mario
-MARIO_START = (WIDTH//2, HIGH//2)
+MARIO_START = (215, 83)
+#MARIO_START = (16, 16)
 MARIO_SPRITE = (0, 0, 0, 12, 16) #12 de ancho x 16 de alto, Mario ocupa el primer cuadrante
+# Posiciones Y permitidas para Mario (de arriba a abajo: 39, 61, 83)
+MARIO_Y_POSITIONS = (39, 61, 83)

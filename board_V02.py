@@ -13,10 +13,11 @@ Board V02
 
 import pyxel
 import constants
+from background import Background
 #from mario_V01 import Mario
 from character import Character
 from mario_V02 import Mario
-from background import Background
+from luigi_V01 import Luigi
 
 class Board:
     """This class contains a simple board"""
@@ -32,6 +33,7 @@ class Board:
 
         # Start coordinates of the elements
         self.mario = Mario(constants.MARIO_START[0], constants.MARIO_START[1])
+        self.luigi = Luigi(constants.LUIGI_START[0], constants.LUIGI_START[1])
         self.background = Background(constants.BACKGROUND_START[0], constants.BACKGROUND_START[1])
 
         # Initialization pyxel
@@ -50,11 +52,18 @@ class Board:
         if pyxel.btnp(pyxel.KEY_Q):
             pyxel.quit()
 
-        # Vertical movement (solo Mario)
+        # --- Controles de Mario (Flechas) ---
         if pyxel.btnp(pyxel.KEY_UP):
             self.mario.move_vertical('up')
         if pyxel.btnp(pyxel.KEY_DOWN):
             self.mario.move_vertical('down')
+
+        # --- Controles de Luigi (W y S) ---
+        if pyxel.btnp(pyxel.KEY_W):
+            self.luigi.move_vertical('up')
+        if pyxel.btnp(pyxel.KEY_S):
+            self.luigi.move_vertical('down')
+
 
     def draw(self):
         """Executed every frame: render."""
@@ -64,4 +73,6 @@ class Board:
         pyxel.blt(self.background.x, self.background.y, *self.background.sprite)
         # Drawing Mario (x, y, *sprite)
         pyxel.blt(self.mario.x, self.mario.y, *self.mario.sprite)
+        # Drawing Luigi (x, y, *sprite)
+        pyxel.blt(self.luigi.x, self.luigi.y, *self.luigi.sprite)
 

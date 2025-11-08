@@ -54,3 +54,6 @@ class Character:
         else:
             self.__y = y
 
+
+
+

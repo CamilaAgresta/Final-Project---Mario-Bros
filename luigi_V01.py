@@ -2,18 +2,19 @@
 Bachelor in Data Science and Engineering 
 Subject: Programming
 Created by Camila Alba Agresta Kohen  
-Created on 7/11/25 at 18:50
+Created on 8/11/25 at 21:13
 Universidad Carlos III de Madrid
 Student
 
 -------
-Mario
-subclase de Character
+
+Subclass Luigi
 """
+
 from character import Character
 import constants
 
-class Mario(Character):
+class Luigi(Character):
     def __init__(self, x: int, y: int):
         """
         Metodo constructor para Mario.
@@ -26,10 +27,10 @@ class Mario(Character):
 
         # 2. Asigna el sprite como un ATRIBUTO
         #    La tupla es (banco_img, x_en_banco, y_en_banco, ancho, alto)
-        self.sprite = constants.MARIO_SPRITE
+        self.sprite = constants.LUIGI_SPRITE
 
         # 3. Guarda las posiciones Y permitidas
-        self.y_positions = constants.MARIO_Y_POSITIONS
+        self.y_positions = constants.LUIGI_Y_POSITIONS
         # 4. Guarda el índice de la posición Y actual
         #    (Como MARIO_START es (215, 83), y 83 es el último en la tupla,
         #    el índice inicial será 2)
@@ -56,4 +57,3 @@ class Mario(Character):
             if self.current_y_index < len(self.y_positions) - 1:
                 self.current_y_index += 1
                 self.y = self.y_positions[self.current_y_index]
-

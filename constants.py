@@ -14,13 +14,21 @@ Constants
 WIDTH = 288
 HIGH = 118
 
+# ---------------------------------
 # Fondo
 BACKGROUND_START = (16,16)
 BACKGROUND_SPRITE = (1, 0, 0, 256, 100)
 
-#Mario
+# ---------------------------------
+# MARIO
 MARIO_START = (215, 83)
 #MARIO_START = (16, 16)
 MARIO_SPRITE = (0, 0, 0, 12, 16) #12 de ancho x 16 de alto, Mario ocupa el primer cuadrante
 # Posiciones Y permitidas para Mario (de arriba a abajo: 39, 61, 83)
 MARIO_Y_POSITIONS = (39, 61, 83)
+
+# ---------------------------------
+# LUIGI
+LUIGI_START = (60, 72)
+LUIGI_SPRITE = (0, 0, 16, 12, 16)
+LUIGI_Y_POSITIONS = (28, 50, 72)

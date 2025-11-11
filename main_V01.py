@@ -27,9 +27,9 @@ Main code V01
 ####################################
 # Ejecutar cada vez que quiera modificar el/los dibujos
 # pyxel edit assets/xxxx (general)
-# personajes -> pyxel edit assets/characters.pyxres
+# pyxel edit assets/characters.pyxres
 
-# pyxel edit assets/fondo
+
 
 ####################################
 

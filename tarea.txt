@@ -1,0 +1,11 @@
+poner cosas que hay que hacer
+
+1. crear las clases faltantes
+    - package
+    - truck
+    - conveyor ?
+
+2. Metodos faltantes
+    - metodo colisión entre paquetes y los personajes
+    - metodo que se caiga paquete
+    - metodo camión lleno

@@ -9,3 +9,10 @@ poner cosas que hay que hacer
     - metodo colisión entre paquetes y los personajes
     - metodo que se caiga paquete
     - metodo camión lleno
+    - metodo que defina que el paquete está en el camión
+
+
+Random
+    - conseguir que los paquetes hagan bien el recorrido
+    - paquetes colisión con mario o luigi y que se caigan
+    - paquetes que llegan al camión

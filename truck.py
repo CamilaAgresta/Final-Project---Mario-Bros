@@ -2,18 +2,19 @@
 Bachelor in Data Science and Engineering 
 Subject: Programming
 Created by Camila Alba Agresta Kohen  
-Created on 11/11/25 at 11:40
+Created on 11/11/25 at 12:33
 Universidad Carlos III de Madrid
 Student
 
 -------
 Final project
-Super Mario
+
+Clase camión
 """
 import constants
 
-class Package:
-    def __init__(self, x: int, y: int, dir: int, at_truck: bool):
+class Truck:
+    def __init__(self, x: int, y: int, dir: int, truck_full: bool):
         """ This method creates the Character object
         :param x : the initial x of the character
         :param y : the initial y of the character
@@ -21,10 +22,10 @@ class Package:
         self.x = x
         self.y = y
         self.dir = dir
-        self.at_truck = at_truck
+        self.truck_full = truck_full
         # 2. Asigna el sprite como un ATRIBUTO
         #    La tupla es (banco_img, x_en_banco, y_en_banco, ancho, alto)
-        self.sprite = constants.PACKAGE_SPRITE
+        self.sprite = constants.TRUCK_SPRITE
 
     # Creating properties and setters for the Character's attributes
     @property
@@ -38,6 +39,10 @@ class Package:
     @property
     def dir(self) -> int:
         return self.__dir
+
+    @property
+    def truck_full(self) -> bool:
+        return self.__truck_full
 
     @x.setter
     def x(self, x: int):
@@ -67,26 +72,6 @@ class Package:
         else:
             self.__dir = dir
 
-    def move_package(self, board_x_size: int, board_y_size: int):
-        x_size = self.sprite[3]
-        y_size = self.sprite[4]
-        if self.dir == 0:
-            if (self.x + x_size < board_x_size):
-                self.x += 1
-            else:
-                self.dir = 1
-        elif self.dir == 1:
-            if (self.y + y_size < board_y_size):
-                self.y += 1
-            else:
-                self.dir = 2
-        elif self.dir == 2:
-            if (self.x > 0):
-                self.x -= 1
-            else:
-                self.dir = 3
-        elif self.dir == 3:
-            if (self.y > 0):
-                self.y -= 1
-            else:
-                self.dir = 0
+    @truck_full.setter
+    def truck_full(self,full:bool):
+        pass

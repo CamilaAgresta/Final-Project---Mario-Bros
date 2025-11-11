@@ -10,6 +10,10 @@ Student
 Final Project: Super Mario Bros
 Constants
 """
+# significado tupla XXX_SPRITE
+# La tupla es (banco_img, x_en_banco, y_en_banco, ancho, alto)
+
+# ---------------------------------
 # Dimension of the screen
 WIDTH = 288
 HIGH = 118
@@ -22,8 +26,8 @@ BACKGROUND_SPRITE = (1, 0, 0, 256, 100)
 # ---------------------------------
 # MARIO
 MARIO_START = (215, 83)
-#MARIO_START = (16, 16)
 MARIO_SPRITE = (0, 0, 0, 12, 16) #12 de ancho x 16 de alto, Mario ocupa el primer cuadrante
+
 # Posiciones Y permitidas para Mario (de arriba a abajo: 39, 61, 83)
 MARIO_Y_POSITIONS = (39, 61, 83)
 
@@ -32,3 +36,13 @@ MARIO_Y_POSITIONS = (39, 61, 83)
 LUIGI_START = (60, 72)
 LUIGI_SPRITE = (0, 0, 16, 12, 16)
 LUIGI_Y_POSITIONS = (28, 50, 72)
+
+# ---------------------------------
+# PACKAGE
+PACKAGE_START = (60,72)
+PACKAGE_SPRITE = (0, 0, 32, 3, 2)
+
+# ---------------------------------
+# TRUCK (18 alto x 22 ancho aprox)
+TRUCK_START = (8,36)
+TRUCK_SPRITE = (0, 0, 40, 22, 18)

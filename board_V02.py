@@ -18,6 +18,7 @@ from background import Background
 from character import Character
 from mario_V02 import Mario
 from luigi_V01 import Luigi
+from package import Package
 
 class Board:
     """This class contains a simple board"""
@@ -35,6 +36,7 @@ class Board:
         self.mario = Mario(constants.MARIO_START[0], constants.MARIO_START[1])
         self.luigi = Luigi(constants.LUIGI_START[0], constants.LUIGI_START[1])
         self.background = Background(constants.BACKGROUND_START[0], constants.BACKGROUND_START[1])
+        self.package = Package(constants.PACKAGE_START[0], constants.PACKAGE_SPRITE[1])
 
         # Initialization pyxel
         pyxel.init(self.width, self.height, title = "Mario Bros")
@@ -75,4 +77,6 @@ class Board:
         pyxel.blt(self.mario.x, self.mario.y, *self.mario.sprite)
         # Drawing Luigi (x, y, *sprite)
         pyxel.blt(self.luigi.x, self.luigi.y, *self.luigi.sprite)
+        # Drawing Package (x, y, *sprite)
+        pyxel.blt(self.package.x, self.luigi.y, *self.package.sprite)
 

@@ -21,7 +21,7 @@ class Package:
         self.x = x
         self.y = y
         self.dir = dir
-        self.at_truck = at_truck
+        #self.at_truck = at_truck
         # 2. Asigna el sprite como un ATRIBUTO
         #    La tupla es (banco_img, x_en_banco, y_en_banco, ancho, alto)
         self.sprite = constants.PACKAGE_SPRITE
@@ -68,15 +68,13 @@ class Package:
             self.__dir = dir
 
     def move_package(self, board_x_size: int, board_y_size: int):
-        x_size = self.sprite[3]
-        y_size = self.sprite[4]
         if self.dir == 0:
-            if (self.x + x_size < board_x_size):
+            if (self.x  < board_x_size):
                 self.x += 1
             else:
                 self.dir = 1
         elif self.dir == 1:
-            if (self.y + y_size < board_y_size):
+            if (self.y  < board_y_size):
                 self.y += 1
             else:
                 self.dir = 2

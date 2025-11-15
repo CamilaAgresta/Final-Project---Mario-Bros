@@ -19,6 +19,8 @@ from character import Character
 from mario_V02 import Mario
 from luigi_V01 import Luigi
 from package import Package
+from truck import Truck
+
 
 class Board:
     """This class contains a simple board"""
@@ -36,7 +38,8 @@ class Board:
         self.mario = Mario(constants.MARIO_START[0], constants.MARIO_START[1])
         self.luigi = Luigi(constants.LUIGI_START[0], constants.LUIGI_START[1])
         self.background = Background(constants.BACKGROUND_START[0], constants.BACKGROUND_START[1])
-        self.package = Package(constants.PACKAGE_START[0], constants.PACKAGE_SPRITE[1])
+        self.package = Package(constants.PACKAGE_START[0], constants.PACKAGE_START[1], 0, False)
+        self.truck = Truck(constants.TRUCK_START[0], constants.TRUCK_START[1],0,False)
 
         # Initialization pyxel
         pyxel.init(self.width, self.height, title = "Mario Bros")
@@ -78,5 +81,7 @@ class Board:
         # Drawing Luigi (x, y, *sprite)
         pyxel.blt(self.luigi.x, self.luigi.y, *self.luigi.sprite)
         # Drawing Package (x, y, *sprite)
-        pyxel.blt(self.package.x, self.luigi.y, *self.package.sprite)
+        pyxel.blt(self.package.x, self.package.y, *self.package.sprite)
+        # Drawing Truck (x, y, *sprite)
+        pyxel.blt(self.truck.x, self.truck.y, *self.truck.sprite)
 

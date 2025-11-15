@@ -21,10 +21,8 @@ class Truck:
         """
         self.x = x
         self.y = y
-        self.dir = dir
-        self.truck_full = truck_full
-        # 2. Asigna el sprite como un ATRIBUTO
-        #    La tupla es (banco_img, x_en_banco, y_en_banco, ancho, alto)
+        #self.dir = dir
+        #self.truck_full = truck_full
         self.sprite = constants.TRUCK_SPRITE
 
     # Creating properties and setters for the Character's attributes
@@ -36,13 +34,13 @@ class Truck:
     def y(self) -> int:
         return self.__y
 
-    @property
-    def dir(self) -> int:
-        return self.__dir
+    #@property
+    #def dir(self) -> int:
+        #return self.__dir
 
-    @property
-    def truck_full(self) -> bool:
-        return self.__truck_full
+    #@property
+    #def truck_full(self) -> bool:
+        #return self.__truck_full
 
     @x.setter
     def x(self, x: int):
@@ -62,16 +60,16 @@ class Truck:
         else:
             self.__y = y
 
-    @dir.setter
-    def dir(self, dir: int):
-        if not isinstance(dir, int):
-            raise TypeError(
-                "The dir must be an integer " + str(type(dir)) + "is provided")
-        elif dir < 0:
-            raise ValueError("The dir must be a non negative number")
-        else:
-            self.__dir = dir
+    #@dir.setter
+    #def dir(self, dir: int):
+        #if not isinstance(dir, int):
+            #raise TypeError(
+                #"The dir must be an integer " + str(type(dir)) + "is provided")
+        #elif dir < 0:
+            #raise ValueError("The dir must be a non negative number")
+        #else:
+            #self.__dir = dir
 
-    @truck_full.setter
-    def truck_full(self,full:bool):
-        pass
+    #@truck_full.setter
+    #def truck_full(self,full:bool):
+        #pass

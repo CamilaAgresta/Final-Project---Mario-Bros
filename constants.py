@@ -39,8 +39,8 @@ LUIGI_Y_POSITIONS = (28, 50, 72)
 
 # ---------------------------------
 # PACKAGE
-PACKAGE_START = (265,86)
-PACKAGE_SPRITE = (0, 0, 32, 3, 2)
+PACKAGE_START = (265,85)
+PACKAGE_SPRITE = (0, 0, 32, 4, 3)
 
 # ---------------------------------
 # TRUCK (18 alto x 22 ancho aprox)

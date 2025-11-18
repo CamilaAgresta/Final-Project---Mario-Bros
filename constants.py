@@ -45,11 +45,11 @@ PACKAGE_SPRITE = (0, 0, 32, 4, 3)
 PACKAGE_Y_POSITIONS = (41, 52, 63, 74, 85)
 
 # coordenadas Y paquete sobre cinta transportadora
-# cinta1 = 85
-# cinta2 = 74
-# cinta3 = 63
-# cinta4 = 52
-# cinta5 = 41
+# cinta1 = 85 (4)
+# cinta2 = 74 (3)
+# cinta3 = 63 (2)
+# cinta4 = 52 (1)
+# cinta5 = 41 (0)
 
 # coordenadas X segun cintra transportadora
 # cinta 1 -> 84 < X < 265

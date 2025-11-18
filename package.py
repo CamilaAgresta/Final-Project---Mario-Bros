@@ -72,13 +72,17 @@ class Package:
             raise ValueError("The dir must be a non negative number")
         else:
             self.__dir = dir
+    def fall(self):
+        """El metodo fall sirve para determinar que pasa cuando se cae un paquete (no hay colisión)
+        Va asociado a perder una vida y a que el jefe regañe a mario y lueigi"""
+        self.y += 1
 
     def check_collision_package(self, character):
         # Definimos un tamaño para la colisión (ej. 12 px)
-        size = 20
+        size = 12
 
         if ((character.x < self.x + size) and
-                (character.x + 12  > self.x) and  # 12 es el ancho aprox de Mario/Luigi
+                (character.x + 12 + 9  > self.x) and  # 12 es el ancho aprox de Mario/Luigi
                 (character.y < self.y + size) and
                 (character.y + 16 > self.y)):  # 16 es el alto de Mario/Luigi
             return True
@@ -93,7 +97,7 @@ class Package:
 
         #print(self.current_y_index)
         #print(self.x)
-        print(self.y)
+        #print(self.y)
 
         # y == 85 -> self.current_y_index == 4
 
@@ -102,21 +106,31 @@ class Package:
                 #if 84 <= self.x <= 265:
                 if self.x > 0:
                     self.x -= 1 # se mueve hacia la izquierda
-
-                #if self.check_collision_package(mario) or self.check_collision_package(luigi):
-                    # AQUÍ PONES LO QUE PASA SI CHOCAN
-                    #print("¡Colisión detectada! El paquete debería subir.")
                 if self.check_collision_package(luigi):
                     self.y = 74
                     #self.y = self.y_positions.index(3)
                     self.current_y_index = 3
+                    print("colision con luigi en la posición: x =", self.x, "and y=", self.y)
+                #else:
+                    #if self.x < 84:
+                        #print("se cae el paquete")
+                        #self.fall()
+                if not self.check_collision_package(mario) and (204 < self.x < 232):
+                        print("se cae el paquete en la posición: x =",self.x,"and y=",self.y)
+                        self.fall()
+
 
             if self.current_y_index == 3:
+                # 80 < X < 201
                 if self.x > 0:
                     self.x += 1 # se mueve hacia la derecha
                 if self.check_collision_package(mario):
                     self.y = 63
                     self.current_y_index = 2
+                else:
+                    if self.x > 201:
+                        print("se cae el paquete")
+                        self.fall()
 
             if self.current_y_index == 2:
                 if self.x > 0:
@@ -124,6 +138,9 @@ class Package:
                 if self.check_collision_package(luigi):
                     self.y = 52
                     self.current_y_index = 1
+                else:
+                    if self.x < 83:
+                        print("se cae el paquete")
 
             if self.current_y_index == 1:
                 if self.x > 0:
@@ -131,12 +148,20 @@ class Package:
                 if self.check_collision_package(mario):
                     self.y = 41
                     self.current_y_index = 0
+                else:
+                    if self.x > 201:
+                        print("se cae el paquete")
+                        self.fall()
 
             if self.current_y_index == 0:
                 if self.x > 0:
                     self.x -= 1 # se mueve hacia la derecha
                 if self.check_collision_package(luigi):
                     self.y = 41
+                else:
+                    if self.x < 83:
+                        print("se cae el paquete")
+                        self.fall()
 
 
 

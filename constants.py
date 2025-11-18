@@ -39,8 +39,22 @@ LUIGI_Y_POSITIONS = (28, 50, 72)
 
 # ---------------------------------
 # PACKAGE
-PACKAGE_START = (265,85)
+PACKAGE_START = (265, 85)
 PACKAGE_SPRITE = (0, 0, 32, 4, 3)
+
+PACKAGE_Y_POSITIONS = (41, 52, 63, 74, 85)
+
+# coordenadas Y paquete sobre cinta transportadora
+# cinta1 = 85
+# cinta2 = 74
+# cinta3 = 63
+# cinta4 = 52
+# cinta5 = 41
+
+# coordenadas X segun cintra transportadora
+# cinta 1 -> 84 < X < 265
+# cinta 2 y 4 -> 80 < X < 201
+# cinta 3 y 5 -> 83 < X < 204
 
 # ---------------------------------
 # TRUCK (18 alto x 22 ancho aprox)

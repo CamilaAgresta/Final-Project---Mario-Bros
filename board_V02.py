@@ -14,7 +14,7 @@ Board V02
 import pyxel
 import constants
 from background import Background
-#from mario_V01 import Mario
+from mario_V02 import Mario
 from character import Character
 from mario_V02 import Mario
 from luigi_V01 import Luigi
@@ -38,7 +38,7 @@ class Board:
         self.mario = Mario(constants.MARIO_START[0], constants.MARIO_START[1])
         self.luigi = Luigi(constants.LUIGI_START[0], constants.LUIGI_START[1])
         self.background = Background(constants.BACKGROUND_START[0], constants.BACKGROUND_START[1])
-        self.package = Package(constants.PACKAGE_START[0], constants.PACKAGE_START[1], 0, False)
+        self.package = Package(constants.PACKAGE_START[0], constants.PACKAGE_START[1], 0, False, wait_frames = 4)
         self.truck = Truck(constants.TRUCK_START[0], constants.TRUCK_START[1],0,False)
 
         # Initialization pyxel
@@ -68,6 +68,12 @@ class Board:
             self.luigi.move_vertical('up')
         if pyxel.btnp(pyxel.KEY_S):
             self.luigi.move_vertical('down')
+
+        # --- MOVIMIENTO AUTOMÁTICO DEL PAQUETE ---
+        #self.package.move_package()
+
+        # --- Presentación de Mario y luigi a la clase paquete ---
+        self.package.move_package(self.mario, self.luigi)
 
 
     def draw(self):

@@ -27,6 +27,7 @@ class Character:
         self.x = x
         self.y = y
 
+
     # Creating properties and setters for the Character's attributes
     @property
     def x(self) -> int:
@@ -53,6 +54,8 @@ class Character:
             raise ValueError("The y must be a non negative number")
         else:
             self.__y = y
+
+
 
 
 

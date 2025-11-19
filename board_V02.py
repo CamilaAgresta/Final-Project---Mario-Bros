@@ -18,7 +18,7 @@ from mario_V02 import Mario
 from character import Character
 from mario_V02 import Mario
 from luigi_V01 import Luigi
-from package import Package
+from package_V02 import Package
 from truck import Truck
 
 
@@ -74,6 +74,8 @@ class Board:
 
         # --- Presentación de Mario y luigi a la clase paquete ---
         self.package.move_package(self.mario, self.luigi)
+
+        self.package.check_collision_package(self.mario, self.luigi)
 
 
     def draw(self):

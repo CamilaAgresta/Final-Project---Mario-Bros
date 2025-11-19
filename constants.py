@@ -35,13 +35,19 @@ MARIO_Y_POSITIONS = (39, 61, 83)
 # LUIGI
 LUIGI_START = (60, 72)
 LUIGI_SPRITE = (0, 0, 16, 12, 16)
+# Posiciones Y permitidas para Luigi (de arriba a abajo: 28, 50, 72)
 LUIGI_Y_POSITIONS = (28, 50, 72)
+
+# ---------------------------------
+# CONVEYOR
+CONVEYOR_1_X = (83, 265, 204, 229)
 
 # ---------------------------------
 # PACKAGE
 PACKAGE_START = (265, 85)
 PACKAGE_SPRITE = (0, 0, 32, 4, 3)
 
+# Posiciones Y de las cintas transportadoras (de arriba a abajo : 41, 52, 63, 74, 85)
 PACKAGE_Y_POSITIONS = (41, 52, 63, 74, 85)
 
 # coordenadas Y paquete sobre cinta transportadora
@@ -52,7 +58,7 @@ PACKAGE_Y_POSITIONS = (41, 52, 63, 74, 85)
 # cinta5 = 41 (0)
 
 # coordenadas X segun cintra transportadora
-# cinta 1 -> 84 < X < 265
+# cinta 1 -> 83 < X < 265 , aujero entre 204 < X < 229
 # cinta 2 y 4 -> 80 < X < 201
 # cinta 3 y 5 -> 83 < X < 204
 

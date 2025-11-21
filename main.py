@@ -32,7 +32,7 @@ Main code V01
 ####################################
 
 import constants
-from board_V02 import Board
+from board import Board
 
 # Creating the board object will also initialize pyxel
 board = Board(constants.WIDTH, constants.HIGH)

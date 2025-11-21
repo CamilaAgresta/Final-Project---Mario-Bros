@@ -24,6 +24,9 @@ class Truck:
         #self.dir = dir
         #self.truck_full = truck_full
         self.sprite = constants.TRUCK_SPRITE
+        self.packages_count = 7  # Contador de paquetes en el camión (empezar con 7 para pruebas)
+        self.is_leaving = False  # Si el camión está yendo
+        self.initial_x = x  # Guardar posición inicial
 
     # Creating properties and setters for the Character's attributes
     @property
@@ -46,8 +49,7 @@ class Truck:
     def x(self, x: int):
         if not isinstance(x, int):
             raise TypeError ("The x must be an integer " + str(type(x)) + "is provided")
-        elif x < 0:
-            raise ValueError("The x must be a non negative number")
+        # Permitir valores negativos para que el camión pueda salir de pantalla
         else:
             self.__x = x
 
@@ -73,3 +75,26 @@ class Truck:
     #@truck_full.setter
     #def truck_full(self,full:bool):
         #pass
+
+    def add_package(self):
+        """Añade un paquete al camión"""
+        self.packages_count += 1
+        print(f"Paquete añadido al camión. Total: {self.packages_count}/8")
+        if self.packages_count >= 8:
+            self.is_leaving = True
+            print("¡Camión lleno! Se va...")
+
+    def update(self):
+        """Actualiza el estado del camión"""
+        if self.is_leaving:
+            self.x -= 2  # El camión se mueve hacia la izquierda
+            # Si el camión sale de la pantalla, reiniciarlo
+            if self.x < -30:
+                self.x = self.initial_x
+                self.packages_count = 0
+                self.is_leaving = False
+                print("Nuevo camión listo para recibir paquetes")
+
+    def is_full(self):
+        """Verifica si el camión está lleno"""
+        return self.packages_count >= 8

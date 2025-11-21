@@ -17,9 +17,9 @@ import constants
 class Luigi(Character):
     def __init__(self, x: int, y: int):
         """
-        Metodo constructor para Mario.
+        Metodo constructor para Luigi.
         Llama al constructor de la clase padre (Character) y
-        asigna el sprite específico de Mario.
+        asigna el sprite específico de Luigi.
         """
         # 1. Llama al __init__ de la clase padre (Character)
         #    para inicializar self.x y self.y
@@ -42,7 +42,7 @@ class Luigi(Character):
             self.y = self.y_positions[0]
 
     def move_vertical(self, direction: str):
-        """Mueve a Mario verticalmente entre las posiciones Y predefinidas."""
+        """Mueve a Luigi verticalmente entre las posiciones Y predefinidas."""
 
         if direction.lower() == 'up':
             # Mueve a una Y más pequeña (más arriba en la pantalla)

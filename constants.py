@@ -44,21 +44,23 @@ CONVEYOR_1_X = (83, 265, 204, 229)
 
 # ---------------------------------
 # PACKAGE
-PACKAGE_START = (265, 85)
+PACKAGE_START = (265, 96)  # Ahora empieza en la cinta más baja (CONVEYOR 0)
 PACKAGE_SPRITE = (0, 0, 32, 4, 3)
 
-# Posiciones Y de las cintas transportadoras (de arriba a abajo : 41, 52, 63, 74, 85)
-PACKAGE_Y_POSITIONS = (41, 52, 63, 74, 85)
+# Posiciones Y de las cintas transportadoras (de arriba a abajo : 41, 52, 63, 74, 85, 96)
+PACKAGE_Y_POSITIONS = (41, 52, 63, 74, 85, 96)
 
 # coordenadas Y paquete sobre cinta transportadora
+# cinta0 = 96 (5) - NUEVA: Cinta inicial donde aparece el paquete
 # cinta1 = 85 (4)
 # cinta2 = 74 (3)
 # cinta3 = 63 (2)
 # cinta4 = 52 (1)
 # cinta5 = 41 (0)
 
-# coordenadas X segun cintra transportadora
-# cinta 1 -> 83 < X < 265 , aujero entre 204 < X < 229
+# coordenadas X segun cinta transportadora
+# cinta 0 -> 83 < X < 265 , agujero entre 204 < X < 229 (Mario atrapa aquí)
+# cinta 1 -> 83 < X < 265 , agujero entre 204 < X < 229
 # cinta 2 y 4 -> 80 < X < 201
 # cinta 3 y 5 -> 83 < X < 204
 
@@ -66,3 +68,8 @@ PACKAGE_Y_POSITIONS = (41, 52, 63, 74, 85)
 # TRUCK (18 alto x 22 ancho aprox)
 TRUCK_START = (24,52)
 TRUCK_SPRITE = (0, 0, 40, 22, 18)
+
+# ---------------------------------
+# BOSS
+BOSS_START = (140, 20)
+BOSS_SPRITE = (0, 0, 0, 12, 16)  # De momento usa el sprite de Mario

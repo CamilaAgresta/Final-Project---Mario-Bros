@@ -90,6 +90,9 @@ class Board:
             self.break_time -= 1
             if self.break_time == 0:
                 print("¡Descanso terminado! Continúa el juego")
+                # Mostrar al boss al final del descanso
+                self.boss.show()
+                self.boss_display_frames = 90  # Mostrar al boss por 3 segundos
             return  # No procesar el paquete durante el descanso
 
         # --- MOVIMIENTO AUTOMÁTICO DEL PAQUETE ---

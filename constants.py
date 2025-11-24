@@ -50,7 +50,7 @@ PACKAGE_SPRITE = (0, 0, 32, 4, 3)
 # Posiciones Y de las cintas transportadoras
 # IMPORTANTE: CINTA 0 y CINTA 1 comparten la misma Y (85) pero diferentes rangos X
 PACKAGE_Y_POSITIONS = (41, 52, 63, 74, 85)  # 5 alturas diferentes
-PACKAGE_WAIT_FRAMES = 4
+PACKAGE_WAIT_FRAMES = 1 # cuanto más grande va más lento
 
 # coordenadas Y paquete sobre cinta transportadora
 # cinta0 = 85 (index 4) - parte DERECHA (x > 229)
@@ -74,4 +74,8 @@ TRUCK_SPRITE = (0, 0, 40, 22, 18)
 # ---------------------------------
 # BOSS
 BOSS_START = (140, 20)
-BOSS_SPRITE = (0, 0, 0, 12, 16)  # De momento usa el sprite de Mario
+BOSS_SPRITE = (0, 0, 64, 12, 16)  # De momento usa el sprite de Mario
+
+# ---------------------------------
+# LIVE
+LIVE_SPRITE = (0, 0, 0, 12, 7)

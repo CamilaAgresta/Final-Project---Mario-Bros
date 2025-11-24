@@ -24,7 +24,7 @@ class Truck:
         #self.dir = dir
         #self.truck_full = truck_full
         self.sprite = constants.TRUCK_SPRITE
-        self.packages_count = 7  # Contador de paquetes en el camión (empezar con 7 para pruebas)
+        self.packages_count = 6  # Contador de paquetes en el camión (empezar con 7 para pruebas)
         self.is_leaving = False  # Si el camión está yendo
         self.initial_x = x  # Guardar posición inicial
 

@@ -41,7 +41,7 @@ class Board:
         self.package = Package(constants.PACKAGE_START[0], constants.PACKAGE_START[1], 0, False, wait_frames = 1)
         self.truck = Truck(constants.TRUCK_START[0], constants.TRUCK_START[1],0,False)
         self.boss = Boss(constants.BOSS_START[0], constants.BOSS_START[1])
-        
+
         # Sistema de vidas
         self.lives = 3
         self.boss_display_frames = 0  # Contador para mostrar al boss temporalmente
@@ -102,7 +102,7 @@ class Board:
         try:
             passed_package = self.package.move_package(self.mario, self.luigi)
             # Si el paquete pasó a la siguiente cinta, aumentar puntuación
-            if passed_package:
+            if passed_package == True:
                 self.score += 1
                 print(f"¡Punto! Puntuación: {self.score}")
             # Si el paquete fue enviado al camión
@@ -161,9 +161,12 @@ class Board:
             pyxel.text(self.boss.x - 20, self.boss.y - 10, "¡CUIDADO!", 8)
         
         # Mostrar vidas en pantalla
-        pyxel.text(5, 5, f"VIDAS: {self.lives}", 7)
+        #pyxel.text(5, 5, f"VIDAS: {self.lives}", 7)
+        for i in range(self.lives):
+            pyxel.blt(225 + i * 15, 20, *constants.LIVE_SPRITE)
+
         # Mostrar puntuación en pantalla
-        pyxel.text(5, 13, f"PUNTOS: {self.score}", 7)
+        pyxel.text(10, 5, f"PUNTOS: {self.score}", 7)
         # Mostrar paquetes en camión
         pyxel.text(5, 21, f"CAMION: {self.truck.packages_count}/8", 7)
         

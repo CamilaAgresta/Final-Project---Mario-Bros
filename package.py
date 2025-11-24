@@ -118,9 +118,7 @@ class Package:
         # MARIO - detecta cuando el paquete sale por el lado derecho de las cintas
         elif ((mario.y == 83 and 204 <= self.x <= 229 and self.y == 85) or  # CONVEYOR 0 -> CONVEYOR 1
                 (mario.y == 61 and self.x >= 201 and self.y == 74) or
-                (mario.y == 61 and self.x >= 204 and self.y == 63) or
-                (mario.y == 39 and self.x >= 201 and self.y == 52) or
-                (mario.y == 39 and self.x >= 204 and self.y == 41)):
+                (mario.y == 39 and self.x >= 201 and self.y == 52)):
             return "collision mario"
         # LUIGI - detecta cuando el paquete sale por el lado izquierdo de las cintas
         elif ((luigi.y == 72 and self.x <= 83 and self.y == 85) or  # CONVEYOR 1 -> siguiente cinta (y=74)
@@ -175,7 +173,7 @@ class Package:
                 # AHORA SÍ cambia de Y (sube a la cinta de arriba)
                 self.y = self.y_positions[self.current_y_index-1]  # Pasa a y=74
                 self.current_y_index -= 1
-                self.x = 83
+                self.x = 80
                 return True  # Retorna True porque el paquete pasó a la siguiente cinta
             else:
                 self.fall()
@@ -209,7 +207,7 @@ class Package:
                 self.fall_start_frame = None
                 self.y = self.y_positions[self.current_y_index-1]
                 self.current_y_index -= 1
-                self.x = 83
+                self.x = 80
                 return True  # Retorna True porque el paquete pasó a la siguiente cinta
             else:
                 self.fall()

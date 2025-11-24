@@ -50,6 +50,7 @@ PACKAGE_SPRITE = (0, 0, 32, 4, 3)
 # Posiciones Y de las cintas transportadoras
 # IMPORTANTE: CINTA 0 y CINTA 1 comparten la misma Y (85) pero diferentes rangos X
 PACKAGE_Y_POSITIONS = (41, 52, 63, 74, 85)  # 5 alturas diferentes
+PACKAGE_WAIT_FRAMES = 4
 
 # coordenadas Y paquete sobre cinta transportadora
 # cinta0 = 85 (index 4) - parte DERECHA (x > 229)

@@ -102,7 +102,7 @@ class Board:
         try:
             passed_package = self.package.move_package(self.mario, self.luigi)
             # Si el paquete pasó a la siguiente cinta, aumentar puntuación
-            if passed_package == True:
+            if passed_package:
                 self.score += 1
                 print(f"¡Punto! Puntuación: {self.score}")
             # Si el paquete fue enviado al camión

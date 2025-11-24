@@ -31,6 +31,8 @@ Main code V01
 
 ####################################
 
+# File to executed all the game
+
 import constants
 from board import Board
 

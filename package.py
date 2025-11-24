@@ -25,7 +25,7 @@ class Package:
         self.y = y
         self.dir = dir
         #self.at_truck = at_truck
-        self.wait_frames = wait_frames # para medir la velocidad del paquete
+        self.wait_frames = constants.PACKAGE_WAIT_FRAMES # para medir la velocidad del paquete
         self.sprite = constants.PACKAGE_SPRITE
 
         self.is_falling = False # Variable para saber si está cayendo

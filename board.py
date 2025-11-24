@@ -38,7 +38,7 @@ class Board:
         self.mario = Mario(constants.MARIO_START[0], constants.MARIO_START[1])
         self.luigi = Luigi(constants.LUIGI_START[0], constants.LUIGI_START[1])
         self.background = Background(constants.BACKGROUND_START[0], constants.BACKGROUND_START[1])
-        self.package = Package(constants.PACKAGE_START[0], constants.PACKAGE_START[1], 0, False, wait_frames = 1)
+        #self.package = Package(constants.PACKAGE_START[0], constants.PACKAGE_START[1], 0, False, wait_frames = 1)
         self.truck = Truck(constants.TRUCK_START[0], constants.TRUCK_START[1],0,False)
         self.boss = Boss(constants.BOSS_START[0], constants.BOSS_START[1])
 
@@ -47,6 +47,17 @@ class Board:
         self.boss_display_frames = 0  # Contador para mostrar al boss temporalmente
         self.score = 0  # Puntuación del juego
         self.break_time = 0  # Contador para el descanso cuando el camión se llena
+
+        # System of packages
+        self.packages = []
+
+        # Variables para controlar la aparición (spawn) de paquetes
+        self.pending_spawns = 0  # Cuántos paquetes quedan por salir en esta tanda
+        self.spawn_timer = 0  # Temporizador para el retraso entre paquetes
+        self.schedule_new_packages()  # Iniciamos el primer paquete
+
+
+
 
         # Initialization pyxel
         pyxel.init(self.width, self.height, title = "Mario Bros")
@@ -57,6 +68,44 @@ class Board:
 
         # Running the game
         pyxel.run(self.update, self.draw)
+
+    def schedule_new_packages(self):
+        """Calcula cuántos paquetes lanzar según la puntuación"""
+
+        # 1. Calculamos cuántos grupos de 50 llevamos
+        # El operador // hace una división entera (sin decimales)
+        extra_packages = self.score // 50
+
+        # 2. La base es 1 paquete + los extra por cada 50 puntos
+        total_packages = 1 + extra_packages
+
+        # (Opcional) Ponemos un límite máximo para que el juego no se rompa si tienes 1000 puntos
+        # Por ejemplo, máximo 5 paquetes simultáneos.
+        if total_packages > 5:
+            total_packages = 5
+
+        self.pending_spawns = total_packages
+
+        print(f"--- NUEVA TANDA ---")
+        print(f"Puntuación: {self.score}")
+        print(f"Nivel de dificultad: {extra_packages}")
+        print(f"Paquetes a generar: {self.pending_spawns}")
+
+        self.spawn_timer = 0  # El primero sale inmediatamente
+
+    def spawn_logic(self):
+        """Gestiona la creación de paquetes con retraso entre ellos"""
+        if self.pending_spawns > 0:
+            if self.spawn_timer > 0:
+                self.spawn_timer -= 1
+            else:
+                # Crear nuevo paquete
+                new_package = Package(constants.PACKAGE_START[0], constants.PACKAGE_START[1], 0, False, wait_frames=1)
+                self.packages.append(new_package)
+                self.pending_spawns -= 1
+                # Si quedan más paquetes por salir, poner el timer (ej. 30 frames = 1 segundo)
+                if self.pending_spawns > 0:
+                    self.spawn_timer = 40
 
     def update(self):
         """Executed every frame: input & logic."""
@@ -95,30 +144,55 @@ class Board:
                 self.boss_display_frames = 90  # Mostrar al boss por 3 segundos
             return  # No procesar el paquete durante el descanso
 
+        # --- LÓGICA DE APARICIÓN DE PAQUETES ---
+        self.spawn_logic()
+
         # --- MOVIMIENTO AUTOMÁTICO DEL PAQUETE ---
         #self.package.move_package()
+        packages_to_remove = []
 
         # --- Presentación de Mario y luigi a la clase paquete ---
         try:
-            passed_package = self.package.move_package(self.mario, self.luigi)
-            # Si el paquete pasó a la siguiente cinta, aumentar puntuación
-            if passed_package == True:
-                self.score += 1
-                print(f"¡Punto! Puntuación: {self.score}")
-            # Si el paquete fue enviado al camión
-            elif passed_package == "to_truck":
-                self.truck.add_package()
-                print(f"¡Paquete al camión! ({self.truck.packages_count}/8)")
-                
-                # Si el camión se llenó, activar descanso de 10 segundos y dar puntos
-                if self.truck.is_full():
-                    self.score += 10  # Bonus por llenar el camión
-                    self.break_time = 300  # 10 segundos a 30 fps
-                    print(f"¡Camión lleno! +10 puntos. Puntuación: {self.score}")
-                    print("Descanso de 10 segundos...")
-                
-                # Crear nuevo paquete
-                self.package = Package(constants.PACKAGE_START[0], constants.PACKAGE_START[1], 0, False, wait_frames = 1)
+            for pkg in self.packages:
+                # Movemos cada paquete individualmente
+                passed_package = pkg.move_package(self.mario, self.luigi)
+
+                # Lógica de puntuación y camión para CADA paquete
+                if passed_package == True:
+                    self.score += 1
+                    print(f"¡Punto! Puntuación: {self.score}")
+
+                elif passed_package == "to_truck":
+                    self.truck.add_package()
+                    packages_to_remove.append(pkg)  # Marcar para borrar
+                    print(f"¡Paquete al camión! ({self.truck.packages_count}/8)")
+
+                    # Si el camión se llenó
+                    if self.truck.is_full():
+                        self.score += 10
+                        self.break_time = 300
+                        print(f"¡Camión lleno! +10 puntos. Puntuación: {self.score}")
+                        print("Descanso de 10 segundos...")
+                        self.packages = []  # Limpiamos paquetes en pantalla durante el descanso
+                        return  # Salimos del update
+
+                    # Si NO se llenó el camión y NO quedan paquetes en cola ni en pantalla...
+                    # Lanzamos la siguiente tanda.
+                    # Nota: Verificamos si es el último paquete activo para no lanzar infinitos
+                    if len(self.packages) - len(packages_to_remove) == 0 and self.pending_spawns == 0:
+                        self.schedule_new_packages()
+
+                # Chequeo de colisiones extra (seguridad)
+                pkg.check_collision_package(self.mario, self.luigi)
+
+                # Eliminar paquetes que llegaron al camión
+            for pkg in packages_to_remove:
+                if pkg in self.packages:
+                    self.packages.remove(pkg)
+
+                # Si se acabaron los paquetes de la pantalla y no hay pendientes (caso raro de sincronización)
+            if len(self.packages) == 0 and self.pending_spawns == 0 and self.break_time == 0:
+                self.schedule_new_packages()
         except RuntimeError as e:
             # Se cayó un paquete
             print(f"\n{e}")
@@ -134,9 +208,11 @@ class Board:
                 pyxel.quit()
             else:
                 # Reiniciar el paquete en la posición inicial
-                self.package = Package(constants.PACKAGE_START[0], constants.PACKAGE_START[1], 0, False, wait_frames = 1)
+                #self.package = Package(constants.PACKAGE_START[0], constants.PACKAGE_START[1], 0, False, wait_frames = 1)
+                self.packages = []
+                self.schedule_new_packages()
 
-        self.package.check_collision_package(self.mario, self.luigi)
+        #self.package.check_collision_package(self.mario, self.luigi)
 
 
     def draw(self):
@@ -150,7 +226,10 @@ class Board:
         # Drawing Luigi (x, y, *sprite)
         pyxel.blt(self.luigi.x, self.luigi.y, *self.luigi.sprite)
         # Drawing Package (x, y, *sprite)
-        pyxel.blt(self.package.x, self.package.y, *self.package.sprite)
+        #pyxel.blt(self.package.x, self.package.y, *self.package.sprite)
+        for pkg in self.packages:
+            pyxel.blt(pkg.x, pkg.y, *pkg.sprite)
+            #print("numero de paquetes actuales:", str(len(self.packages)))
         # Drawing Truck (x, y, *sprite)
         pyxel.blt(self.truck.x, self.truck.y, *self.truck.sprite)
         

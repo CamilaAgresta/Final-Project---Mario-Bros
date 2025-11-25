@@ -248,7 +248,17 @@ class Board:
         # Mostrar puntuación en pantalla
         pyxel.text(10, 5, f"PUNTOS: {self.score}", 7)
         # Mostrar paquetes en camión
-        pyxel.text(5, 21, f"CAMION: {self.truck.packages_count}/8", 7)
+        #pyxel.text(5, 21, f"CAMION: {self.truck.packages_count}/8", 7)
+
+        truck_offset_x = self.truck.x - constants.TRUCK_START[0]
+        limit = min(self.truck.packages_count, 8)
+        for i in range(limit):
+            # Obtenemos la coordenada base de constants
+            base_x, base_y = constants.TRUCK_PACKAGE_POSITIONS[i]
+
+            # Dibujamos sumando el desplazamiento del camión al X
+            pyxel.blt(base_x + truck_offset_x, base_y, *constants.PACKAGE_SPRITE)
+
         
         # Mostrar mensaje de descanso si está activo
         if self.break_time > 0:
@@ -257,5 +267,12 @@ class Board:
 
 
         # prueba
-        pyxel.blt(162, 100, *self.package.sprite)
+        #pyxel.blt(36, 60, *self.package.sprite) # 1
+        #pyxel.blt(41, 60, *self.package.sprite) # 2
+        #pyxel.blt(36, 56, *self.package.sprite) # 3
+        #pyxel.blt(41, 56, *self.package.sprite) # 4
+        #pyxel.blt(36, 52, *self.package.sprite) # 5
+        #pyxel.blt(41, 52, *self.package.sprite) # 6
+        #pyxel.blt(36, 48, *self.package.sprite) # 7
+        #pyxel.blt(41, 48, *self.package.sprite) # 8
 

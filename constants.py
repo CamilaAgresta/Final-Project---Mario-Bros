@@ -70,6 +70,24 @@ PACKAGE_WAIT_FRAMES = 2 # cuanto más grande va más lento
 # cinta 2 y 4 -> 80 < X < 201
 # cinta 3 y 5 -> 83 < X < 204
 
+# POSITIONS PACKAGES AT TRUCK (camión quieto)
+# paquete 1 -> x = 36, y = 60
+# paquete 2 -> x = 41, y = 60
+
+#PACKAGE_TRUCK_X = (36,41)
+#PACKAGE_TRUCK_Y = (60,56,52,48)
+
+TRUCK_PACKAGE_POSITIONS = [
+    (36, 60), # Paquete 1 (índice 0)
+    (41, 60), # Paquete 2 (índice 1)
+    (36, 56), # Paquete 3 (índice 2)
+    (41, 56), # Paquete 4 (índice 3)
+    (36, 52), # Paquete 5 (índice 4)
+    (41, 52), # Paquete 6 (índice 5)
+    (36, 48), # Paquete 7 (índice 6)
+    (41, 48)  # Paquete 8 (índice 7)
+]
+
 # ---------------------------------
 # TRUCK (18 alto x 22 ancho aprox)
 TRUCK_START = (24,52)

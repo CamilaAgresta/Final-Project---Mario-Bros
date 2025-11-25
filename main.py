@@ -21,6 +21,7 @@ Main code V01
 # git commit -m "mensaje corto explicando el cambio"
 
 # git push origin main
+# git push origin main --force
 
 ####################################
 # Ejecutar cada vez que quiera modificar el/los dibujos

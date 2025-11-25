@@ -111,26 +111,27 @@ class Package:
 
     def check_collision_package(self, mario, luigi):
         # PAQUETE SOBRE CINTA
+        # 85 = constants.CONVEYOR_Y[0]
         # CONVEYOR 0 - solo parte derecha (antes de Mario) en y=85
-        if (self.y == 85 and 229 < self.x):
+        if (self.y == constants.CONVEYOR_Y[0] and constants.CONVEYOR_0_X < self.x):
             return "package in conveyor"
         # CONVEYOR 1 - solo parte izquierda (después de Mario) en y=85
-        elif (self.y == 85 and 83 <= self.x <= 204):
+        elif (self.y == constants.CONVEYOR_Y[0] and constants.CONVEYOR_ODD_X[0] <= self.x <= constants.CONVEYOR_ODD_X[1]):
             return "package in conveyor"
         # Resto de cintas
-        elif (((self.y == 74 or self.y == 52) and 80 <= self.x <= 201) or
-              ((self.y == 63 or self.y == 41) and 83 <= self.x <= 204)):
+        elif (((self.y == constants.CONVEYOR_Y[1] or self.y == constants.CONVEYOR_Y[3]) and constants.CONVEYOR_EVEN_X[0] <= self.x <= constants.CONVEYOR_EVEN_X[1]) or
+              ((self.y == constants.CONVEYOR_Y[2] or self.y == constants.CONVEYOR_Y[4]) and constants.CONVEYOR_ODD_X[0] <= self.x <= constants.CONVEYOR_ODD_X[1])):
             return "package in conveyor"
 
         # MARIO - detecta cuando el paquete sale por el lado derecho de las cintas
-        elif ((mario.y == 83 and 204 <= self.x <= 229 and self.y == 85) or  # CONVEYOR 0 -> CONVEYOR 1
-                (mario.y == 61 and self.x >= 201 and self.y == 74) or
-                (mario.y == 39 and self.x >= 201 and self.y == 52)):
+        elif ((mario.y == constants.MARIO_Y_POSITIONS[2] and constants.CONVEYOR_ODD_X[1] <= self.x <= constants.CONVEYOR_0_X and self.y == constants.CONVEYOR_Y[0]) or  # CONVEYOR 0 -> CONVEYOR 1
+                (mario.y == constants.MARIO_Y_POSITIONS[1] and self.x >= constants.CONVEYOR_EVEN_X[1] and self.y == constants.CONVEYOR_Y[1]) or
+                (mario.y == constants.MARIO_Y_POSITIONS[0] and self.x >= constants.CONVEYOR_EVEN_X[1] and self.y == constants.CONVEYOR_Y[3])):
             return "collision mario"
         # LUIGI - detecta cuando el paquete sale por el lado izquierdo de las cintas
-        elif ((luigi.y == 72 and self.x <= 83 and self.y == 85) or  # CONVEYOR 1 -> siguiente cinta (y=74)
-                (luigi.y == 50 and self.x <= 83 and self.y == 63) or
-                (luigi.y == 28 and self.x <= 83 and self.y == 41)):
+        elif ((luigi.y == constants.LUIGI_Y_POSITIONS[2] and self.x <= constants.CONVEYOR_ODD_X[0] and self.y == constants.CONVEYOR_Y[0]) or  # CONVEYOR 1 -> siguiente cinta (y=74)
+                (luigi.y == constants.LUIGI_Y_POSITIONS[1] and self.x <= constants.CONVEYOR_ODD_X[0] and self.y == constants.CONVEYOR_Y[2]) or
+                (luigi.y == constants.LUIGI_Y_POSITIONS[0] and self.x <= constants.CONVEYOR_ODD_X[0] and self.y == constants.CONVEYOR_Y[4])):
             return "collision luigi"
         else:
             #self.fall()
@@ -152,7 +153,7 @@ class Package:
         # --- CONVEYOR 0 (Parte derecha - donde aparece el paquete, y=85) ---
         # Usamos un flag especial para distinguir CONVEYOR 0 de CONVEYOR 1
         # Ambos tienen current_y_index=4 pero diferentes rangos X
-        if self.current_y_index == 4 and self.x > 204:
+        if self.current_y_index == 4 and self.x > constants.CONVEYOR_ODD_X[1]:
             if collision_status == "package in conveyor":
                 self.is_falling = False  # Resetear estado de caída
                 self.fall_start_frame = None
@@ -162,13 +163,13 @@ class Package:
                 self.is_falling = False  # Resetear estado de caída
                 self.fall_start_frame = None
                 # NO cambia Y, solo X (pasa de parte derecha a parte izquierda)
-                self.x = 204  # Comienza en el lado derecho de CONVEYOR 1
+                self.x = constants.CONVEYOR_ODD_X[1]  # Comienza en el lado derecho de CONVEYOR 1
                 return True  # Retorna True porque el paquete pasó a la siguiente cinta
             else:
                 self.fall()
 
         # --- CONVEYOR 1 (Parte izquierda - misma altura y=85, pero x <= 204) ---
-        elif self.current_y_index == 4 and self.x <= 204:
+        elif self.current_y_index == 4 and self.x <= constants.CONVEYOR_ODD_X[1]:
             if collision_status == "package in conveyor":
                 self.is_falling = False  # Resetear estado de caída
                 self.fall_start_frame = None
@@ -180,7 +181,7 @@ class Package:
                 # AHORA SÍ cambia de Y (sube a la cinta de arriba)
                 self.y = self.y_positions[self.current_y_index-1]  # Pasa a y=74
                 self.current_y_index -= 1
-                self.x = 80
+                self.x = constants.CONVEYOR_EVEN_X[0]
                 return True  # Retorna True porque el paquete pasó a la siguiente cinta
             else:
                 self.fall()
@@ -197,7 +198,7 @@ class Package:
                 self.fall_start_frame = None
                 self.y = self.y_positions[self.current_y_index-1]
                 self.current_y_index -= 1
-                self.x = 204
+                self.x = constants.CONVEYOR_ODD_X[1]
                 return True  # Retorna True porque el paquete pasó a la siguiente cinta
             else:
                 self.fall()
@@ -214,7 +215,7 @@ class Package:
                 self.fall_start_frame = None
                 self.y = self.y_positions[self.current_y_index-1]
                 self.current_y_index -= 1
-                self.x = 80
+                self.x = constants.CONVEYOR_EVEN_X[0]
                 return True  # Retorna True porque el paquete pasó a la siguiente cinta
             else:
                 self.fall()

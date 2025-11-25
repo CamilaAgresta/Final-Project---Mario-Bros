@@ -40,7 +40,11 @@ LUIGI_Y_POSITIONS = (28, 50, 72)
 
 # ---------------------------------
 # CONVEYOR
-CONVEYOR_1_X = (83, 265, 204, 229)
+CONVEYOR_0_X = 229
+CONVEYOR_ODD_X = (83, 204)
+CONVEYOR_EVEN_X = (80, 201)
+
+CONVEYOR_Y = (85, 74, 63, 52, 41)
 
 # ---------------------------------
 # PACKAGE

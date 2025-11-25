@@ -78,6 +78,13 @@ class Package:
             raise ValueError("The dir must be a non negative number")
         else:
             self.__dir = dir
+
+    def package_visible(self):
+        if 122 < self.x < 162:
+            return False
+        else:
+            return True
+
     def fall(self):
         """El metodo fall sirve para determinar que pasa cuando se cae un paquete (no hay colisión)
         Va asociado a perder una vida y a que el jefe regañe a mario y luigi"""

@@ -38,7 +38,7 @@ class Board:
         self.mario = Mario(constants.MARIO_START[0], constants.MARIO_START[1])
         self.luigi = Luigi(constants.LUIGI_START[0], constants.LUIGI_START[1])
         self.background = Background(constants.BACKGROUND_START[0], constants.BACKGROUND_START[1])
-        #self.package = Package(constants.PACKAGE_START[0], constants.PACKAGE_START[1], 0, False, wait_frames = 1)
+        self.package = Package(constants.PACKAGE_START[0], constants.PACKAGE_START[1], 0, False, wait_frames = 1) # Hay que borrarla despues
         self.truck = Truck(constants.TRUCK_START[0], constants.TRUCK_START[1],0,False)
         self.boss = Boss(constants.BOSS_START[0], constants.BOSS_START[1])
 
@@ -74,7 +74,7 @@ class Board:
 
         # 1. Calculamos cuántos grupos de 50 llevamos
         # El operador // hace una división entera (sin decimales)
-        extra_packages = self.score // 50
+        extra_packages = self.score // 20
 
         # 2. La base es 1 paquete + los extra por cada 50 puntos
         total_packages = 1 + extra_packages
@@ -228,7 +228,8 @@ class Board:
         # Drawing Package (x, y, *sprite)
         #pyxel.blt(self.package.x, self.package.y, *self.package.sprite)
         for pkg in self.packages:
-            pyxel.blt(pkg.x, pkg.y, *pkg.sprite)
+            if pkg.package_visible():
+                pyxel.blt(pkg.x, pkg.y, *pkg.sprite)
             #print("numero de paquetes actuales:", str(len(self.packages)))
         # Drawing Truck (x, y, *sprite)
         pyxel.blt(self.truck.x, self.truck.y, *self.truck.sprite)
@@ -253,4 +254,8 @@ class Board:
         if self.break_time > 0:
             seconds_left = self.break_time // 30
             pyxel.text(100, 50, f"DESCANSO: {seconds_left}s", 10)
+
+
+        # prueba
+        pyxel.blt(162, 100, *self.package.sprite)
 

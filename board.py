@@ -256,8 +256,8 @@ class Board:
             # Obtenemos la coordenada base de constants
             base_x, base_y = constants.TRUCK_PACKAGE_POSITIONS[i]
 
-            # Dibujamos sumando el desplazamiento del camión al X
-            pyxel.blt(base_x + truck_offset_x, base_y, *constants.PACKAGE_SPRITE)
+            # Dibujamos sumando el desplazamiento del camión al X (usando el sprite final)
+            pyxel.blt(base_x + truck_offset_x, base_y, *constants.PACKAGE_SPRITE_3)
 
         
         # Mostrar mensaje de descanso si está activo

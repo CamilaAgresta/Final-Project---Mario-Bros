@@ -26,7 +26,7 @@ class Package:
         self.dir = dir
         #self.at_truck = at_truck
         self.wait_frames = constants.PACKAGE_WAIT_FRAMES # para medir la velocidad del paquete
-        self.sprite = constants.PACKAGE_SPRITE
+        self.sprite = constants.PACKAGE_SPRITE_1  # Empieza con el primer sprite
 
         self.is_falling = False # Variable para saber si está cayendo
         self.fall_start_frame = None # Frame en el que empezó a caer
@@ -37,6 +37,10 @@ class Package:
         print("LA LISTA REAL ES:", self.y_positions)
 
         self.current_y_index = self.y_positions.index(y)
+        
+        # Contador de veces que ha pasado por zona invisible
+        self.invisible_count = 0
+        self.was_invisible = False  # Para detectar cuando sale de zona invisible
 
     # Creating properties and setters for the Character's attributes
     @property
@@ -80,10 +84,27 @@ class Package:
             self.__dir = dir
 
     def package_visible(self):
-        if 122 < self.x < 162:
-            return False
-        else:
-            return True
+        """Determina si el paquete es visible y cambia el sprite al salir de zona invisible"""
+        is_visible = not (115 < self.x < 162)
+        
+        # Detectar cuando sale de zona invisible
+        if self.was_invisible and is_visible:
+            # Acaba de salir de zona invisible
+            self.invisible_count += 1
+            print(f"¡Paquete salió de zona invisible! Contador: {self.invisible_count}")
+            
+            # Cambiar sprite según cuántas veces ha sido invisible
+            if self.invisible_count == 1:
+                self.sprite = constants.PACKAGE_SPRITE_2
+                print("→ Cambiado a SPRITE 2")
+            elif self.invisible_count >= 2:
+                self.sprite = constants.PACKAGE_SPRITE_3
+                print("→ Cambiado a SPRITE 3")
+        
+        # Actualizar estado de visibilidad
+        self.was_invisible = not is_visible
+        
+        return is_visible
 
     def fall(self):
         """El metodo fall sirve para determinar que pasa cuando se cae un paquete (no hay colisión)

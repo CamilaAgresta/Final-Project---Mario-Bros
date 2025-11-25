@@ -44,25 +44,32 @@ CONVEYOR_0_X = 229
 CONVEYOR_ODD_X = (83, 204)
 CONVEYOR_EVEN_X = (80, 201)
 
-CONVEYOR_Y = (85, 74, 63, 52, 41)
+CONVEYOR_Y = (83, 72, 61, 50, 39)
 
 # ---------------------------------
 # PACKAGE
-PACKAGE_START = (265, 85)  # Empieza en CONVEYOR 0 (parte derecha)
-PACKAGE_SPRITE = (0, 0, 32, 4, 3)
+PACKAGE_START = (265, 83)  # Empieza en CONVEYOR 0 (parte derecha, 2 píxeles más arriba)
+
+# Sprites del paquete (cambian al pasar por zonas invisibles)
+PACKAGE_SPRITE_1 = (0, 27, 6, 11, 5)   # Sprite inicial
+PACKAGE_SPRITE_2 = (0, 27, 14, 11, 5)  # Sprite después de 1ra vez invisible
+PACKAGE_SPRITE_3 = (0, 29, 22, 7, 5)  # Sprite después de 2da vez invisible
+
+# Sprite por defecto (para compatibilidad)
+PACKAGE_SPRITE = PACKAGE_SPRITE_1
 
 # Posiciones Y de las cintas transportadoras
 # IMPORTANTE: CINTA 0 y CINTA 1 comparten la misma Y (85) pero diferentes rangos X
-PACKAGE_Y_POSITIONS = (41, 52, 63, 74, 85)  # 5 alturas diferentes
+PACKAGE_Y_POSITIONS = (39, 50, 61, 72, 83)  # 5 alturas diferentes (2 píxeles más arriba)
 PACKAGE_WAIT_FRAMES = 2 # cuanto más grande va más lento
 
 # coordenadas Y paquete sobre cinta transportadora
-# cinta0 = 85 (index 4) - parte DERECHA (x > 229)
-# cinta1 = 85 (index 4) - parte IZQUIERDA (83 <= x <= 204) 
-# cinta2 = 74 (index 3)
-# cinta3 = 63 (index 2)
-# cinta4 = 52 (index 1)
-# cinta5 = 41 (index 0)
+# cinta0 = 83 (index 4) - parte DERECHA (x > 229)
+# cinta1 = 83 (index 4) - parte IZQUIERDA (83 <= x <= 204) 
+# cinta2 = 72 (index 3)
+# cinta3 = 61 (index 2)
+# cinta4 = 50 (index 1)
+# cinta5 = 39 (index 0)
 
 # coordenadas X segun cinta transportadora
 # cinta 0 -> x > 229 (parte derecha, antes de Mario)
@@ -78,20 +85,20 @@ PACKAGE_WAIT_FRAMES = 2 # cuanto más grande va más lento
 #PACKAGE_TRUCK_Y = (60,56,52,48)
 
 TRUCK_PACKAGE_POSITIONS = [
-    (36, 60), # Paquete 1 (índice 0)
-    (41, 60), # Paquete 2 (índice 1)
-    (36, 56), # Paquete 3 (índice 2)
-    (41, 56), # Paquete 4 (índice 3)
-    (36, 52), # Paquete 5 (índice 4)
-    (41, 52), # Paquete 6 (índice 5)
-    (36, 48), # Paquete 7 (índice 6)
-    (41, 48)  # Paquete 8 (índice 7)
+    (36, 58), # Paquete 1 (índice 0) - 2 píxeles más arriba
+    (41, 58), # Paquete 2 (índice 1) - 2 píxeles más arriba
+    (36, 54), # Paquete 3 (índice 2) - 2 píxeles más arriba
+    (41, 54), # Paquete 4 (índice 3) - 2 píxeles más arriba
+    (36, 50), # Paquete 5 (índice 4) - 2 píxeles más arriba
+    (41, 50), # Paquete 6 (índice 5) - 2 píxeles más arriba
+    (36, 46), # Paquete 7 (índice 6) - 2 píxeles más arriba
+    (41, 46)  # Paquete 8 (índice 7) - 2 píxeles más arriba
 ]
 
 # ---------------------------------
-# TRUCK (18 alto x 22 ancho aprox)
+# TRUCK (18 alto x 24 ancho - extendido 2 píxeles a la derecha)
 TRUCK_START = (24,52)
-TRUCK_SPRITE = (0, 0, 40, 22, 18)
+TRUCK_SPRITE = (0, 0, 40, 24, 18)
 
 # ---------------------------------
 # BOSS

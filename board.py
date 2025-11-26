@@ -60,7 +60,7 @@ class Board:
 
 
         # Initialization pyxel
-        pyxel.init(self.width, self.height, title = "Mario Bros")
+        pyxel.init(self.width, self.height, title = "Mario Bros", display_scale=constants.DISPLAY_SCALE)
         # Loading the pyxres file with the images
         # AGREGAR CARPETAS DIFERENTES DENTRO DE ASSATS PARA PERSONAJES - FONDO - LABERINTO
         pyxel.load("assets/characters.pyxres")
@@ -229,7 +229,7 @@ class Board:
         #pyxel.blt(self.package.x, self.package.y, *self.package.sprite)
         for pkg in self.packages:
             if pkg.package_visible():
-                pyxel.blt(pkg.x, pkg.y, *pkg.sprite)
+                pkg.draw()
             #print("numero de paquetes actuales:", str(len(self.packages)))
         # Drawing Truck (x, y, *sprite)
         pyxel.blt(self.truck.x, self.truck.y, *self.truck.sprite)

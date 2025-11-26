@@ -17,11 +17,13 @@ Constants
 # Dimension of the screen
 WIDTH = 288
 HIGH = 118
+DISPLAY_SCALE = 4
 
 # ---------------------------------
 # Fondo
 BACKGROUND_START = (16,16)
 BACKGROUND_SPRITE = (1, 0, 0, 256, 100)
+INVISIBLE_ZONE_X = (125, 162)
 
 # ---------------------------------
 # MARIO

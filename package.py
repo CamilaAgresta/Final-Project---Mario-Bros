@@ -85,26 +85,74 @@ class Package:
 
     def package_visible(self):
         """Determina si el paquete es visible y cambia el sprite al salir de zona invisible"""
-        is_visible = not (115 < self.x < 162)
+        # Ya no necesitamos devolver True/False para dibujar, porque draw() se encarga
+        # Pero mantenemos la lógica de cambio de sprite
         
-        # Detectar cuando sale de zona invisible
-        if self.was_invisible and is_visible:
-            # Acaba de salir de zona invisible
+        # Zona invisible definida en constants
+        start_invisible = constants.INVISIBLE_ZONE_X[0]
+        end_invisible = constants.INVISIBLE_ZONE_X[1]
+        
+        # Está completamente dentro de la zona invisible?
+        is_fully_invisible = (self.x > start_invisible and self.x + self.sprite[3] < end_invisible)
+        
+        # Detectar cuando entra en zona TOTALMENTE invisible
+        # Si antes NO estaba totalmente invisible y ahora SI lo está, cambiamos el sprite
+        # Usamos un atributo nuevo 'was_fully_invisible' para detectar el flanco de subida
+        if not hasattr(self, 'was_fully_invisible'):
+            self.was_fully_invisible = False
+
+        if not self.was_fully_invisible and is_fully_invisible:
+            # Acaba de entrar completamente en la zona invisible
             self.invisible_count += 1
-            print(f"¡Paquete salió de zona invisible! Contador: {self.invisible_count}")
+            print(f"¡Paquete totalmente oculto! Contador: {self.invisible_count}")
             
-            # Cambiar sprite según cuántas veces ha sido invisible
+            # Cambiar sprite AHORA, para que cuando salga ya tenga el nuevo
             if self.invisible_count == 1:
                 self.sprite = constants.PACKAGE_SPRITE_2
-                print("→ Cambiado a SPRITE 2")
+                print("→ Cambiado a SPRITE 2 (listo para salir)")
             elif self.invisible_count >= 2:
                 self.sprite = constants.PACKAGE_SPRITE_3
-                print("→ Cambiado a SPRITE 3")
+                print("→ Cambiado a SPRITE 3 (listo para salir)")
         
-        # Actualizar estado de visibilidad
-        self.was_invisible = not is_visible
+        # Actualizar estado para la próxima vez
+        self.was_fully_invisible = is_fully_invisible
         
-        return is_visible
+        return not is_fully_invisible
+
+    def draw(self):
+        """Dibuja el paquete con recorte (clipping) si está entrando/saliendo de la zona invisible"""
+        img = self.sprite[0]
+        u = self.sprite[1]
+        v = self.sprite[2]
+        w = self.sprite[3]
+        h = self.sprite[4]
+        
+        start_invisible = constants.INVISIBLE_ZONE_X[0]
+        end_invisible = constants.INVISIBLE_ZONE_X[1]
+        
+        # Caso 1: Totalmente visible (fuera de la zona y sus bordes)
+        if self.x + w <= start_invisible or self.x >= end_invisible:
+            pyxel.blt(self.x, self.y, img, u, v, w, h)
+            
+        # Caso 2: Entrando a la zona invisible (se recorta la derecha)
+        elif self.x < start_invisible < self.x + w:
+            # Ancho visible es la distancia hasta el inicio de la zona invisible
+            visible_w = start_invisible - self.x
+            pyxel.blt(self.x, self.y, img, u, v, visible_w, h)
+            
+        # Caso 3: Saliendo de la zona invisible (se recorta la izquierda)
+        elif self.x < end_invisible < self.x + w:
+            # Cuánto se ha salido ya (ancho visible)
+            visible_w = (self.x + w) - end_invisible
+            # Offset en X para dibujar (empieza en end_invisible)
+            draw_x = end_invisible
+            # Offset en la textura (saltamos la parte que sigue oculta)
+            skip_w = w - visible_w
+            pyxel.blt(draw_x, self.y, img, u + skip_w, v, visible_w, h)
+            
+        # Caso 4: Totalmente dentro (no se dibuja nada)
+        else:
+            pass
 
     def fall(self):
         """El metodo fall sirve para determinar que pasa cuando se cae un paquete (no hay colisión)

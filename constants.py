@@ -104,8 +104,10 @@ TRUCK_SPRITE = (0, 0, 40, 24, 18)
 
 # ---------------------------------
 # BOSS
-BOSS_START = (140, 20)
-BOSS_SPRITE = (0, 0, 64, 12, 16)  # De momento usa el sprite de Mario
+MARIO_FAIL = (249, 60)
+LUIGI_FAIL = (26, 83)
+BOSS_SPRITE_1 = (0, 0, 64, 12, 16)  # De momento usa el sprite de Mario
+BOSS_SPRITE_2 = (0, 16, 64, 18, 16)  # De momento usa el sprite de Mario
 
 # ---------------------------------
 # LIVE

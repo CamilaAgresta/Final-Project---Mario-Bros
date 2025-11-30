@@ -40,13 +40,15 @@ class Board:
         self.background = Background(constants.BACKGROUND_START[0], constants.BACKGROUND_START[1])
         self.package = Package(constants.PACKAGE_START[0], constants.PACKAGE_START[1], 0, False, wait_frames = 1) # Hay que borrarla despues
         self.truck = Truck(constants.TRUCK_START[0], constants.TRUCK_START[1],0,False)
-        self.boss = Boss(constants.BOSS_START[0], constants.BOSS_START[1])
+        self.boss = Boss(constants.MARIO_FAIL[0], constants.MARIO_FAIL[1])
 
         # Sistema de vidas
         self.lives = 3
         self.boss_display_frames = 0  # Contador para mostrar al boss temporalmente
         self.score = 0  # Puntuación del juego
         self.break_time = 0  # Contador para el descanso cuando el camión se llena
+        self.is_frozen = False # Estado de congelación del juego
+        self.freeze_timer = 0 # Temporizador para la congelación
 
         # System of packages
         self.packages = []
@@ -112,6 +114,25 @@ class Board:
         # To exit the game
         if pyxel.btnp(pyxel.KEY_Q):
             pyxel.quit()
+
+        # --- LÓGICA DE CONGELACIÓN (BOSS REGAÑANDO) ---
+        if self.is_frozen:
+            self.freeze_timer -= 1
+            self.boss.animate() # Animar al boss mientras está congelado
+            
+            if self.freeze_timer <= 0:
+                self.is_frozen = False
+                self.boss.hide()
+                
+                # Lógica de fin de vida o reinicio después de la animación
+                if self.lives <= 0:
+                    print("\n¡GAME OVER! Has perdido todas las vidas")
+                    pyxel.quit()
+                else:
+                    self.packages = []
+                    self.schedule_new_packages()
+            
+            return # DETENER EL RESTO DEL JUEGO
 
         # --- Controles de Mario (Flechas) ---
         if pyxel.btnp(pyxel.KEY_UP):
@@ -199,18 +220,42 @@ class Board:
             self.lives -= 1
             print(f"Vidas restantes: {self.lives}\n")
             
+            # Determinar quién falló para posicionar al boss
+            # pkg es la variable del bucle for, que mantiene su valor (el paquete que falló)
+            culprit = "mario" # Default
+            
+            # Lógica para determinar culpable
+            # Index 0 (39) -> Luigi
+            # Index 1 (50) -> Mario
+            # Index 2 (61) -> Luigi
+            # Index 3 (72) -> Mario
+            # Index 4 (83) -> Depende de X
+            
+            if pkg.current_y_index == 0 or pkg.current_y_index == 2:
+                culprit = "luigi"
+            elif pkg.current_y_index == 1 or pkg.current_y_index == 3:
+                culprit = "mario"
+            elif pkg.current_y_index == 4:
+                if pkg.x > 204:
+                    culprit = "mario"
+                else:
+                    culprit = "luigi"
+            
+            # Posicionar boss
+            if culprit == "mario":
+                self.boss.x = constants.MARIO_FAIL[0]
+                self.boss.y = constants.MARIO_FAIL[1]
+            else:
+                self.boss.x = constants.LUIGI_FAIL[0]
+                self.boss.y = constants.LUIGI_FAIL[1]
+
             # Mostrar al boss regañando
             self.boss.show()
-            self.boss_display_frames = 90  # Mostrar al boss por 3 segundos (90 frames a 30 fps)
+            # self.boss_display_frames = 90  # YA NO SE USA, ahora usamos freeze_timer
             
-            if self.lives <= 0:
-                print("\n¡GAME OVER! Has perdido todas las vidas")
-                pyxel.quit()
-            else:
-                # Reiniciar el paquete en la posición inicial
-                #self.package = Package(constants.PACKAGE_START[0], constants.PACKAGE_START[1], 0, False, wait_frames = 1)
-                self.packages = []
-                self.schedule_new_packages()
+            # ACTIVAR CONGELACIÓN
+            self.is_frozen = True
+            self.freeze_timer = 60 # 2 segundos a 30 fps
 
         #self.package.check_collision_package(self.mario, self.luigi)
 
@@ -238,7 +283,7 @@ class Board:
         if self.boss.is_visible:
             pyxel.blt(self.boss.x, self.boss.y, *self.boss.sprite)
             # Mostrar mensaje de regaño
-            pyxel.text(self.boss.x - 20, self.boss.y - 10, "¡CUIDADO!", 8)
+
         
         # Mostrar vidas en pantalla
         #pyxel.text(5, 5, f"VIDAS: {self.lives}", 7)

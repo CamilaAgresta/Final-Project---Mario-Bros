@@ -23,7 +23,9 @@ class Boss:
         self.x = x
         self.y = y
         # De momento usa el sprite de Mario hasta que se cree el diseño del boss
-        self.sprite = constants.BOSS_SPRITE
+        # De momento usa el sprite de Mario hasta que se cree el diseño del boss
+        self.sprite = constants.BOSS_SPRITE_1
+        self.animation_frame = 0
         self.is_visible = False  # El boss solo aparece cuando se cae un paquete
 
     # Creating properties and setters for the Boss's attributes
@@ -71,3 +73,12 @@ class Boss:
     def hide(self):
         """Oculta al boss de la pantalla"""
         self.is_visible = False
+
+    def animate(self):
+        """Alterna entre los dos sprites del boss para crear animación"""
+        self.animation_frame += 1
+        if self.animation_frame % 10 == 0:  # Cambiar cada 10 frames (ajustar velocidad)
+            if self.sprite == constants.BOSS_SPRITE_1:
+                self.sprite = constants.BOSS_SPRITE_2
+            else:
+                self.sprite = constants.BOSS_SPRITE_1

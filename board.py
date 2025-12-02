@@ -103,6 +103,23 @@ class Board:
         print(f"Paquetes a generar: {self.pending_spawns}")
 
         self.spawn_timer = 0  # El primero sale inmediatamente
+        
+    def reset_game(self):
+        """Reinicia el juego a su estado inicial"""
+        self.score = 0
+        self.lives = 3
+        self.packages = []
+        self.pending_spawns = 0
+        self.spawn_timer = 0
+        self.truck.packages_count = 0
+        self.break_time = 0
+        self.is_frozen = False
+        self.freeze_timer = 0
+        self.deliveries_count = 0
+        self.boss.hide()
+        self.schedule_new_packages()
+        self.game_state = "PLAYING"
+        print("¡Juego reiniciado!")
 
     def spawn_logic(self):
         """Gestiona la creación de paquetes con retraso entre ellos"""
@@ -153,25 +170,33 @@ class Board:
                     print(f"¡Juego iniciado en modo {self.difficulty}!")
                 elif self.menu_selection == 1:  # Quit
                     pyxel.quit()
+            return
             
-            return  # No ejecutar el resto de la lógica del juego
+        # --- GAME OVER ---
+        if self.game_state == "GAME_OVER":
+            if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.KEY_R):
+                self.reset_game()
+            elif pyxel.btnp(pyxel.KEY_Q):
+                pyxel.quit()
+            return
 
         # --- LÓGICA DE CONGELACIÓN (BOSS REGAÑANDO) ---
         if self.is_frozen:
             self.freeze_timer -= 1
             self.boss.animate() # Animar al boss mientras está congelado
-            
             if self.freeze_timer <= 0:
                 self.is_frozen = False
                 self.boss.hide()
                 
-                # Lógica de fin de vida o reinicio después de la animación
+                # Si las vidas llegaron a 0, cambiar a estado GAME OVER
+                # Si las vidas llegaron a 0, cambiar a estado GAME OVER
                 if self.lives <= 0:
-                    print("\n¡GAME OVER! Has perdido todas las vidas")
-                    pyxel.quit()
-                else:
-                    self.packages = []
-                    self.schedule_new_packages()
+                    self.game_state = "GAME_OVER"
+                    return
+                
+                # Reiniciar el paquete que falló (limpiar lista y lanzar nueva tanda)
+                self.packages = []
+                self.schedule_new_packages()
             
             return # DETENER EL RESTO DEL JUEGO
 
@@ -310,6 +335,14 @@ class Board:
             # ACTIVAR CONGELACIÓN
             self.is_frozen = True
             self.freeze_timer = 60 # 2 segundos a 30 fps
+            
+            # Verificar Game Over
+            if self.lives <= 0:
+                print("¡GAME OVER!")
+                # No cambiamos inmediatamente a GAME_OVER para dejar que se vea la animación de fallo
+                # Pero podemos marcarlo para que cambie después del freeze
+                # O simplemente dejar que update() lo maneje cuando termine el freeze
+                pass
 
         #self.package.check_collision_package(self.mario, self.luigi)
 
@@ -438,7 +471,38 @@ class Board:
                 pyxel.text(extreme_x + len(extreme_text) * 4 + 2, diff_y + 10, ">", 10)
             
             return  # No dibujar el resto del juego
-        
+            
+        # --- DIBUJAR GAME OVER ---
+        if self.game_state == "GAME_OVER":
+            # Fondo negro o rojo oscuro
+            pyxel.cls(0)
+            
+            # Título GAME OVER
+            game_over_text = "GAME OVER"
+            go_x = (self.width - len(game_over_text) * 4) // 2
+            go_y = self.height // 2 - 20
+            pyxel.text(go_x, go_y, game_over_text, 8) # Rojo
+            
+            # Puntuación final
+            score_text = f"FINAL SCORE: {self.score}"
+            score_x = (self.width - len(score_text) * 4) // 2
+            pyxel.text(score_x, go_y + 15, score_text, 7) # Blanco
+            
+            # Instrucciones
+            restart_text = "PRESS ENTER TO RESTART"
+            quit_text = "PRESS Q TO QUIT"
+            
+            restart_x = (self.width - len(restart_text) * 4) // 2
+            quit_x = (self.width - len(quit_text) * 4) // 2
+            
+            # Parpadeo del texto de reinicio
+            color_blink = 10 if (pyxel.frame_count // 15) % 2 == 0 else 7
+            
+            pyxel.text(restart_x, go_y + 35, restart_text, color_blink)
+            pyxel.text(quit_x, go_y + 45, quit_text, 13)
+            
+            return
+
         # --- DIBUJAR JUEGO (solo si game_state == "PLAYING") ---
         # Dibuja el fondo PRIMERO (desde Banco 1)
         pyxel.blt(self.background.x, self.background.y, *self.background.sprite)

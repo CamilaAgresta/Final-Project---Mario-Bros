@@ -16,7 +16,7 @@ import pyxel
 from character import Character
 
 class Package:
-    def __init__(self, x: int, y: int, dir: int, at_truck: bool, wait_frames: int = 2):
+    def __init__(self, x: int, y: int, dir: int, at_truck: bool, wait_frames: int = 2, difficulty: str = "EASY"):
         """ This method creates the Character object
         :param x : the initial x of the character
         :param y : the initial y of the character
@@ -26,6 +26,7 @@ class Package:
         self.dir = dir
         #self.at_truck = at_truck
         self.wait_frames = constants.PACKAGE_WAIT_FRAMES # para medir la velocidad del paquete
+        self.difficulty = difficulty
         self.sprite = constants.PACKAGE_SPRITE_1  # Empieza con el primer sprite
 
         self.is_falling = False # Variable para saber si está cayendo
@@ -37,6 +38,14 @@ class Package:
         print("LA LISTA REAL ES:", self.y_positions)
 
         self.current_y_index = self.y_positions.index(y)
+        
+        # Ajustar velocidad si es dificultad MEDIA y está en cinta impar (1, 3, 5)
+        # Cintas impares: indices 0 (cinta 5), 2 (cinta 3), 4 (cinta 1 - parte izq)
+        # Nota: Cinta 1 comparte index 4 con Cinta 0. Se ajustará dinámicamente en move_package
+        if self.difficulty == "MEDIUM":
+             # Velocidad base más rápida para cintas impares (wait_frames menor = más rápido)
+             # Si wait_frames es 2, 1.5x velocidad sería wait_frames = 1.33 (redondeado a 1)
+             pass 
         
         # Contador de veces que ha pasado por zona invisible
         self.invisible_count = 0
@@ -211,8 +220,34 @@ class Package:
         Se turna, en una cinta va de derecha a izquierda y en la siguiente de izquierda a derecha
         El paquete solo puede subir a la siguiente cinta si colisiona con luigi o mario"""
 
-        if pyxel.frame_count % self.wait_frames != 0:
-            return
+        # Lógica de velocidad según dificultad
+        # En MEDIUM, solo las cintas IMPARES (1, 3, 5) van 1.5x más rápido
+        # Cinta 5 = index 0, Cinta 3 = index 2, Cinta 1 = index 4 (pero solo parte izquierda)
+        # Cinta 0 = index 4 (parte derecha) es PAR, no debe ir rápido
+        
+        # Normal: se mueve cada 2 frames (wait_frames = 2)
+        # 1.5x más rápido: se mueve cada ~1.33 frames (2 de cada 3 frames)
+        
+        is_odd_conveyor = False
+        
+        if self.difficulty == "MEDIUM":
+            # Cintas 5 y 3 (indices 0 y 2) son impares
+            if self.current_y_index in [0, 2]:
+                is_odd_conveyor = True
+            # Para index 4, solo es impar si está en la zona de CONVEYOR 1 (izquierda)
+            elif self.current_y_index == 4 and constants.CONVEYOR_ODD_X[0] <= self.x <= constants.CONVEYOR_ODD_X[1]:
+                is_odd_conveyor = True
+        
+        if is_odd_conveyor:
+            # Cintas impares en modo MEDIUM: moverse 2 de cada 3 frames
+            if pyxel.frame_count % 3 != 0:  # Se mueve en frames 1, 2, 4, 5, 7, 8... (2 de cada 3)
+                pass  # Continuar con el movimiento
+            else:
+                return  # Saltar este frame
+        else:
+            # Velocidad normal: moverse cada 2 frames
+            if pyxel.frame_count % self.wait_frames != 0:
+                return
 
         # y == 85 -> self.current_y_index == 4
 

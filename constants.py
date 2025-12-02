@@ -17,7 +17,7 @@ Constants
 # Dimension of the screen
 WIDTH = 288
 HIGH = 118
-DISPLAY_SCALE = 4
+DISPLAY_SCALE = 8  # Aumentado para pantalla más grande
 
 # ---------------------------------
 # Fondo
@@ -50,7 +50,7 @@ CONVEYOR_Y = (83, 72, 61, 50, 39)
 
 # ---------------------------------
 # PACKAGE
-PACKAGE_START = (265, 83)  # Empieza en CONVEYOR 0 (parte derecha, 2 píxeles más arriba)
+PACKAGE_START = (260, 83)  # Empieza en CONVEYOR 0 (parte derecha, 2 píxeles más arriba)
 
 # Sprites del paquete (cambian al pasar por zonas invisibles)
 PACKAGE_SPRITE_1 = (0, 27, 6, 11, 5)   # Sprite inicial

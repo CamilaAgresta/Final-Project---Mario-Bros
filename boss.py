@@ -27,6 +27,7 @@ class Boss:
         self.sprite = constants.BOSS_SPRITE_1
         self.animation_frame = 0
         self.is_visible = False  # El boss solo aparece cuando se cae un paquete
+        self.flipped = False  # Si es True, el sprite se voltea horizontalmente
 
     # Creating properties and setters for the Boss's attributes
     @property

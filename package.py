@@ -221,31 +221,55 @@ class Package:
         El paquete solo puede subir a la siguiente cinta si colisiona con luigi o mario"""
 
         # Lógica de velocidad según dificultad
-        # En MEDIUM, solo las cintas IMPARES (1, 3, 5) van 1.5x más rápido
-        # Cinta 5 = index 0, Cinta 3 = index 2, Cinta 1 = index 4 (pero solo parte izquierda)
-        # Cinta 0 = index 4 (parte derecha) es PAR, no debe ir rápido
+        # EASY: Todas las cintas 1x (cada 2 frames)
+        # MEDIUM: Impares 1.5x (2 de cada 3 frames), resto 1x
+        # EXTREME: Conv0=1x, Pares=1.5x, Impares=2x (cada frame)
         
-        # Normal: se mueve cada 2 frames (wait_frames = 2)
-        # 1.5x más rápido: se mueve cada ~1.33 frames (2 de cada 3 frames)
-        
+        # Identificar tipo de cinta
+        is_conveyor_0 = False
         is_odd_conveyor = False
+        is_even_conveyor = False
         
-        if self.difficulty == "MEDIUM":
-            # Cintas 5 y 3 (indices 0 y 2) son impares
-            if self.current_y_index in [0, 2]:
-                is_odd_conveyor = True
-            # Para index 4, solo es impar si está en la zona de CONVEYOR 1 (izquierda)
-            elif self.current_y_index == 4 and constants.CONVEYOR_ODD_X[0] <= self.x <= constants.CONVEYOR_ODD_X[1]:
-                is_odd_conveyor = True
+        # Conveyor 0: parte derecha del index 4 (x > CONVEYOR_0_X)
+        if self.current_y_index == 4 and self.x > constants.CONVEYOR_0_X:
+            is_conveyor_0 = True
+        # Cintas impares: 5 (index 0), 3 (index 2), 1 (index 4 izquierda)
+        elif self.current_y_index in [0, 2]:
+            is_odd_conveyor = True
+        elif self.current_y_index == 4 and constants.CONVEYOR_ODD_X[0] <= self.x <= constants.CONVEYOR_ODD_X[1]:
+            is_odd_conveyor = True
+        # Cintas pares: 4 (index 1), 2 (index 3)
+        elif self.current_y_index in [1, 3]:
+            is_even_conveyor = True
         
-        if is_odd_conveyor:
-            # Cintas impares en modo MEDIUM: moverse 2 de cada 3 frames
-            if pyxel.frame_count % 3 != 0:  # Se mueve en frames 1, 2, 4, 5, 7, 8... (2 de cada 3)
-                pass  # Continuar con el movimiento
+        # Aplicar velocidad según dificultad y tipo de cinta
+        if self.difficulty == "EXTREME":
+            if is_odd_conveyor:
+                # Impares en EXTREME: 2x velocidad (cada frame)
+                pass  # Siempre se mueve
+            elif is_even_conveyor:
+                # Pares en EXTREME: 1.5x velocidad (2 de cada 3 frames)
+                if pyxel.frame_count % 3 != 0:
+                    pass  # Continuar
+                else:
+                    return  # Saltar este frame
+            else:  # is_conveyor_0
+                # Conveyor 0 en EXTREME: 1x velocidad normal
+                if pyxel.frame_count % self.wait_frames != 0:
+                    return
+        elif self.difficulty == "MEDIUM":
+            if is_odd_conveyor:
+                # Impares en MEDIUM: 1.5x velocidad (2 de cada 3 frames)
+                if pyxel.frame_count % 3 != 0:
+                    pass  # Continuar
+                else:
+                    return  # Saltar este frame
             else:
-                return  # Saltar este frame
-        else:
-            # Velocidad normal: moverse cada 2 frames
+                # Resto en MEDIUM: 1x velocidad normal
+                if pyxel.frame_count % self.wait_frames != 0:
+                    return
+        else:  # EASY
+            # EASY: todas las cintas 1x velocidad normal
             if pyxel.frame_count % self.wait_frames != 0:
                 return
 

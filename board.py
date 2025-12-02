@@ -132,18 +132,23 @@ class Board:
             if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.KEY_S):
                 self.menu_selection = 1  # Quit
             
-            # Navegación de dificultad (izquierda/derecha para Easy/Medium)
+            # Navegación de dificultad (izquierda/derecha para Easy/Medium/Extreme)
             if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.KEY_A):
-                self.difficulty_selection = 0  # Easy
+                self.difficulty_selection = (self.difficulty_selection - 1) % 3
             if pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.KEY_D):
-                self.difficulty_selection = 1  # Medium
+                self.difficulty_selection = (self.difficulty_selection + 1) % 3
             
             # Selección del menú
             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.KEY_SPACE):
                 if self.menu_selection == 0:  # Play
                     self.game_state = "PLAYING"
                     # Establecer dificultad según la selección
-                    self.difficulty = "EASY" if self.difficulty_selection == 0 else "MEDIUM"
+                    if self.difficulty_selection == 0:
+                        self.difficulty = "EASY"
+                    elif self.difficulty_selection == 1:
+                        self.difficulty = "MEDIUM"
+                    else:
+                        self.difficulty = "EXTREME"
                     self.schedule_new_packages()  # Iniciar el juego con paquetes
                     print(f"¡Juego iniciado en modo {self.difficulty}!")
                 elif self.menu_selection == 1:  # Quit
@@ -402,26 +407,35 @@ class Board:
             diff_label_x = (self.width - len(diff_label) * 4) // 2
             pyxel.text(diff_label_x, diff_y, diff_label, 6)
             
-            # Mostrar Easy y Medium con indicadores
+            # Mostrar Easy, Medium, y Extreme con indicadores
             easy_text = "EASY"
-            medium_text = "MEDIUM"
-            easy_x = self.width // 2 - 30
-            medium_x = self.width // 2 + 10
+            medium_text = "MED"
+            extreme_text = "EXT"
+            
+            # Posiciones ajustadas para 3 opciones
+            easy_x = self.width // 2 - 40
+            medium_x = self.width // 2 - 8
+            extreme_x = self.width // 2 + 20
             
             # Colorear según selección
             easy_color = 10 if self.difficulty_selection == 0 else 13
             medium_color = 10 if self.difficulty_selection == 1 else 13
+            extreme_color = 10 if self.difficulty_selection == 2 else 13
             
             pyxel.text(easy_x, diff_y + 10, easy_text, easy_color)
             pyxel.text(medium_x, diff_y + 10, medium_text, medium_color)
+            pyxel.text(extreme_x, diff_y + 10, extreme_text, extreme_color)
             
             # Flechas indicadoras <  >
             if self.difficulty_selection == 0:
                 pyxel.text(easy_x - 8, diff_y + 10, "<", 10)
                 pyxel.text(easy_x + len(easy_text) * 4 + 2, diff_y + 10, ">", 10)
-            else:
+            elif self.difficulty_selection == 1:
                 pyxel.text(medium_x - 8, diff_y + 10, "<", 10)
                 pyxel.text(medium_x + len(medium_text) * 4 + 2, diff_y + 10, ">", 10)
+            else:
+                pyxel.text(extreme_x - 8, diff_y + 10, "<", 10)
+                pyxel.text(extreme_x + len(extreme_text) * 4 + 2, diff_y + 10, ">", 10)
             
             return  # No dibujar el resto del juego
         

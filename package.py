@@ -16,7 +16,7 @@ import pyxel
 from character import Character
 
 class Package:
-    def __init__(self, x: int, y: int, dir: int, at_truck: bool, wait_frames: int = 2, difficulty: str = "EASY"):
+    def __init__(self, x: int, y: int, dir: int, at_truck: bool, wait_frames: int = 2, difficulty: str = "EASY", conveyor_speeds: dict = None):
         """ This method creates the Character object
         :param x : the initial x of the character
         :param y : the initial y of the character
@@ -27,6 +27,8 @@ class Package:
         #self.at_truck = at_truck
         self.wait_frames = constants.PACKAGE_WAIT_FRAMES # para medir la velocidad del paquete
         self.difficulty = difficulty
+        self.conveyor_speeds = conveyor_speeds if conveyor_speeds else {}
+        self.move_accumulator = 0.0 # Acumulador para movimiento fraccionario (Crazy mode)
         self.sprite = constants.PACKAGE_SPRITE_1  # Empieza con el primer sprite
 
         self.is_falling = False # Variable para saber si está cayendo
@@ -177,8 +179,8 @@ class Package:
         frames_falling = pyxel.frame_count - self.fall_start_frame
         time_falling = frames_falling / 30.0  # convertir frames a segundos
         
-        # Si ha pasado más de 0.3 segundos cayendo, lanzar error
-        if time_falling > 0.3:
+        # Si ha pasado más de 0.5 segundos cayendo, lanzar error
+        if time_falling > 0.5:
             raise RuntimeError(f"¡PAQUETE PERDIDO! El paquete cayó sin ser atrapado en la posición x={self.x}, y={self.y}")
         
         # Caer más lento: solo actualizar Y cada 2 frames (mitad de velocidad)
@@ -202,14 +204,14 @@ class Package:
             return "package in conveyor"
 
         # MARIO - detecta cuando el paquete sale por el lado derecho de las cintas
-        elif ((mario.y == constants.MARIO_Y_POSITIONS[2] and constants.CONVEYOR_ODD_X[1] <= self.x <= constants.CONVEYOR_0_X and self.y == constants.CONVEYOR_Y[0]) or  # CONVEYOR 0 -> CONVEYOR 1
-                (mario.y == constants.MARIO_Y_POSITIONS[1] and self.x >= constants.CONVEYOR_EVEN_X[1] and self.y == constants.CONVEYOR_Y[1]) or
-                (mario.y == constants.MARIO_Y_POSITIONS[0] and self.x >= constants.CONVEYOR_EVEN_X[1] and self.y == constants.CONVEYOR_Y[3])):
+        elif ((mario.y == constants.MARIO_Y_POSITIONS[2] and constants.CONVEYOR_ODD_X[1] <= self.x <= constants.CONVEYOR_0_X and abs(self.y - constants.CONVEYOR_Y[0]) <= 8) or  # CONVEYOR 0 -> CONVEYOR 1
+                (mario.y == constants.MARIO_Y_POSITIONS[1] and self.x >= constants.CONVEYOR_EVEN_X[1] and abs(self.y - constants.CONVEYOR_Y[1]) <= 8) or
+                (mario.y == constants.MARIO_Y_POSITIONS[0] and self.x >= constants.CONVEYOR_EVEN_X[1] and abs(self.y - constants.CONVEYOR_Y[3]) <= 8)):
             return "collision mario"
         # LUIGI - detecta cuando el paquete sale por el lado izquierdo de las cintas
-        elif ((luigi.y == constants.LUIGI_Y_POSITIONS[2] and self.x <= constants.CONVEYOR_ODD_X[0] and self.y == constants.CONVEYOR_Y[0]) or  # CONVEYOR 1 -> siguiente cinta (y=74)
-                (luigi.y == constants.LUIGI_Y_POSITIONS[1] and self.x <= constants.CONVEYOR_ODD_X[0] and self.y == constants.CONVEYOR_Y[2]) or
-                (luigi.y == constants.LUIGI_Y_POSITIONS[0] and self.x <= constants.CONVEYOR_ODD_X[0] and self.y == constants.CONVEYOR_Y[4])):
+        elif ((luigi.y == constants.LUIGI_Y_POSITIONS[2] and self.x <= constants.CONVEYOR_ODD_X[0] and abs(self.y - constants.CONVEYOR_Y[0]) <= 8) or  # CONVEYOR 1 -> siguiente cinta (y=74)
+                (luigi.y == constants.LUIGI_Y_POSITIONS[1] and self.x <= constants.CONVEYOR_ODD_X[0] and abs(self.y - constants.CONVEYOR_Y[2]) <= 8) or
+                (luigi.y == constants.LUIGI_Y_POSITIONS[0] and self.x <= constants.CONVEYOR_ODD_X[0] and abs(self.y - constants.CONVEYOR_Y[4]) <= 8)):
             return "collision luigi"
         else:
             #self.fall()
@@ -243,7 +245,28 @@ class Package:
             is_even_conveyor = True
         
         # Aplicar velocidad según dificultad y tipo de cinta
-        if self.difficulty == "EXTREME":
+        # Aplicar velocidad según dificultad y tipo de cinta
+        if self.difficulty == "CRAZY":
+            multiplier = 1.0
+            
+            if is_conveyor_0:
+                multiplier = 1.0
+            else:
+                # Obtener multiplicador del diccionario (usando current_y_index)
+                # Nota: para index 4 izquierda, usamos key 4
+                multiplier = self.conveyor_speeds.get(self.current_y_index, 1.0)
+            
+            # Velocidad base es 0.5 px/frame (1 cada 2 frames)
+            speed = 0.5 * multiplier
+            self.move_accumulator += speed
+            
+            if self.move_accumulator >= 1.0:
+                self.move_accumulator -= 1.0
+                # Continuar para mover
+            else:
+                return # No mover en este frame
+                
+        elif self.difficulty == "EXTREME":
             if is_odd_conveyor:
                 # Impares en EXTREME: 2x velocidad (cada frame)
                 pass  # Siempre se mueve
@@ -290,8 +313,10 @@ class Package:
                 print("collision with Mario at point x=", self.x," y=",self.y)
                 self.is_falling = False  # Resetear estado de caída
                 self.fall_start_frame = None
+                self.fall_start_frame = None
                 # NO cambia Y, solo X (pasa de parte derecha a parte izquierda)
                 self.x = constants.CONVEYOR_ODD_X[1]  # Comienza en el lado derecho de CONVEYOR 1
+                self.y = constants.CONVEYOR_Y[0] # Asegurar que Y se resetea si lo atrapamos cayendo
                 return True  # Retorna True porque el paquete pasó a la siguiente cinta
             else:
                 self.fall()

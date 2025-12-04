@@ -12,6 +12,7 @@ Board V02
 """
 
 import pyxel
+import random
 import constants
 from background import Background
 from character import Character
@@ -40,10 +41,15 @@ class Board:
         self.background = Background(constants.BACKGROUND_START[0], constants.BACKGROUND_START[1])
         self.package = Package(constants.PACKAGE_START[0], constants.PACKAGE_START[1], 0, False, wait_frames = 1) # Hay que borrarla despues
         self.truck = Truck(constants.TRUCK_START[0], constants.TRUCK_START[1],0,False)
-        self.boss = Boss(constants.MARIO_FAIL[0], constants.MARIO_FAIL[1])
+        self.boss_right = Boss(constants.MARIO_FAIL[0], constants.MARIO_FAIL[1])
+        self.boss_left = Boss(constants.LUIGI_FAIL[0], constants.LUIGI_FAIL[1])
+        self.boss_right.flipped = True # Mario side (right) needs flip
+        self.boss_left.flipped = False # Luigi side (left) normal
 
         # Sistema de vidas
         self.lives = 3
+        self.life_blink_timer = 0  # Contador para el parpadeo de vida perdida
+        self.life_being_lost = False  # Si se está perdiendo una vida (parpadeo activo)
         self.boss_display_frames = 0  # Contador para mostrar al boss temporalmente
         self.score = 0  # Puntuación del juego
         self.break_time = 0  # Contador para el descanso cuando el camión se llena
@@ -56,6 +62,7 @@ class Board:
         self.difficulty_selection = 0  # 0 = Easy, 1 = Medium
         self.difficulty = "EASY"  # Se establece al empezar el juego
         self.deliveries_count = 0  # Contador de entregas exitosas (para recuperación de vida en Medium)
+        self.conveyor_speeds = {} # Diccionario para velocidades aleatorias en modo CRAZY
 
         # System of packages
         self.packages = []
@@ -83,23 +90,30 @@ class Board:
 
         # 1. Calculamos cuántos grupos llevamos según dificultad
         # El operador // hace una división entera (sin decimales)
-        # Easy: +1 paquete cada 20 puntos, Medium: +1 paquete cada 30 puntos
-        threshold = 20 if self.difficulty == "EASY" else 30
-        extra_packages = self.score // threshold
+        
+        if self.difficulty == "CRAZY":
+            # Crazy: +2 paquetes cada 20 puntos
+            # Formula: Base 1 + (score // 20) * 2
+            threshold = 20
+            extra_packages = (self.score // threshold) * 2
+        else:
+            # Easy: +1 paquete cada 20 puntos, Medium/Extreme: +1 paquete cada 30 puntos
+            threshold = 20 if self.difficulty == "EASY" else 30
+            extra_packages = self.score // threshold
 
         # 2. La base es 1 paquete + los extra
         total_packages = 1 + extra_packages
 
         # (Opcional) Ponemos un límite máximo para que el juego no se rompa si tienes 1000 puntos
         # Por ejemplo, máximo 5 paquetes simultáneos.
-        if total_packages > 5:
-            total_packages = 5
+        if total_packages > 8: # Aumentamos límite para Crazy
+            total_packages = 8
 
         self.pending_spawns = total_packages
 
         print(f"--- NUEVA TANDA ---")
         print(f"Puntuación: {self.score}")
-        print(f"Dificultad: {self.difficulty} (umbral: {threshold})")
+        print(f"Dificultad: {self.difficulty}")
         print(f"Paquetes a generar: {self.pending_spawns}")
 
         self.spawn_timer = 0  # El primero sale inmediatamente
@@ -116,7 +130,28 @@ class Board:
         self.is_frozen = False
         self.freeze_timer = 0
         self.deliveries_count = 0
-        self.boss.hide()
+        self.deliveries_count = 0
+        self.life_blink_timer = 0
+        self.life_being_lost = False
+        self.boss_right.hide()
+        self.boss_left.hide()
+        
+        # Generar velocidades aleatorias para CRAZY
+        if self.difficulty == "CRAZY":
+            # Cintas 1-5 (indices 0-4)
+            # Conveyor 0 (index 4 derecha) es fija 1x
+            # Resto random 1.0 - 2.0
+            self.conveyor_speeds = {
+                0: random.uniform(1.0, 2.0), # Cinta 5
+                1: random.uniform(1.0, 2.0), # Cinta 4
+                2: random.uniform(1.0, 2.0), # Cinta 3
+                3: random.uniform(1.0, 2.0), # Cinta 2
+                4: random.uniform(1.0, 2.0)  # Cinta 1 (parte izquierda)
+            }
+            print("Velocidades CRAZY generadas:", self.conveyor_speeds)
+        else:
+            self.conveyor_speeds = {}
+            
         self.schedule_new_packages()
         self.game_state = "PLAYING"
         print("¡Juego reiniciado!")
@@ -127,8 +162,8 @@ class Board:
             if self.spawn_timer > 0:
                 self.spawn_timer -= 1
             else:
-                # Crear nuevo paquete con la dificultad actual
-                new_package = Package(constants.PACKAGE_START[0], constants.PACKAGE_START[1], 0, False, wait_frames=1, difficulty=self.difficulty)
+                # Crear nuevo paquete con la dificultad actual y velocidades (si hay)
+                new_package = Package(constants.PACKAGE_START[0], constants.PACKAGE_START[1], 0, False, wait_frames=1, difficulty=self.difficulty, conveyor_speeds=self.conveyor_speeds)
                 self.packages.append(new_package)
                 self.pending_spawns -= 1
                 # Si quedan más paquetes por salir, poner el timer (ej. 30 frames = 1 segundo)
@@ -149,11 +184,11 @@ class Board:
             if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.KEY_S):
                 self.menu_selection = 1  # Quit
             
-            # Navegación de dificultad (izquierda/derecha para Easy/Medium/Extreme)
+            # Navegación de dificultad (izquierda/derecha para Easy/Medium/Extreme/Crazy)
             if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.KEY_A):
-                self.difficulty_selection = (self.difficulty_selection - 1) % 3
+                self.difficulty_selection = (self.difficulty_selection - 1) % 4
             if pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.KEY_D):
-                self.difficulty_selection = (self.difficulty_selection + 1) % 3
+                self.difficulty_selection = (self.difficulty_selection + 1) % 4
             
             # Selección del menú
             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.KEY_SPACE):
@@ -164,9 +199,13 @@ class Board:
                         self.difficulty = "EASY"
                     elif self.difficulty_selection == 1:
                         self.difficulty = "MEDIUM"
-                    else:
+                    elif self.difficulty_selection == 2:
                         self.difficulty = "EXTREME"
-                    self.schedule_new_packages()  # Iniciar el juego con paquetes
+                    else:
+                        self.difficulty = "CRAZY"
+                    
+                    # Reiniciar juego (esto genera velocidades Crazy si aplica)
+                    self.reset_game()
                     print(f"¡Juego iniciado en modo {self.difficulty}!")
                 elif self.menu_selection == 1:  # Quit
                     pyxel.quit()
@@ -180,13 +219,21 @@ class Board:
                 pyxel.quit()
             return
 
+        # --- LÓGICA DE PARPADEO DE VIDA ---
+        if self.life_blink_timer > 0:
+            self.life_blink_timer -= 1
+            if self.life_blink_timer == 0:
+                self.life_being_lost = False
+        
         # --- LÓGICA DE CONGELACIÓN (BOSS REGAÑANDO) ---
         if self.is_frozen:
             self.freeze_timer -= 1
-            self.boss.animate() # Animar al boss mientras está congelado
+            if self.boss_right.is_visible: self.boss_right.animate()
+            if self.boss_left.is_visible: self.boss_left.animate()
             if self.freeze_timer <= 0:
                 self.is_frozen = False
-                self.boss.hide()
+                self.boss_right.hide()
+                self.boss_left.hide()
                 
                 # Si las vidas llegaron a 0, cambiar a estado GAME OVER
                 # Si las vidas llegaron a 0, cambiar a estado GAME OVER
@@ -201,22 +248,29 @@ class Board:
             return # DETENER EL RESTO DEL JUEGO
 
         # --- Controles de Mario (Flechas) ---
-        if pyxel.btnp(pyxel.KEY_UP):
-            self.mario.move_vertical('up')
-        if pyxel.btnp(pyxel.KEY_DOWN):
-            self.mario.move_vertical('down')
+        # Se congela durante los últimos 10 segundos del descanso (300 frames)
+        if not (self.break_time > 0 and self.break_time <= 300):
+            if pyxel.btnp(pyxel.KEY_UP):
+                self.mario.move_vertical('up')
+            if pyxel.btnp(pyxel.KEY_DOWN):
+                self.mario.move_vertical('down')
 
         # --- Controles de Luigi (W y S) ---
-        if pyxel.btnp(pyxel.KEY_W):
-            self.luigi.move_vertical('up')
-        if pyxel.btnp(pyxel.KEY_S):
-            self.luigi.move_vertical('down')
+        # Se congela durante los últimos 10 segundos del descanso (300 frames)
+        if not (self.break_time > 0 and self.break_time <= 300):
+            if pyxel.btnp(pyxel.KEY_W):
+                self.luigi.move_vertical('up')
+            if pyxel.btnp(pyxel.KEY_S):
+                self.luigi.move_vertical('down')
 
         # --- Gestión del boss (contador para ocultarlo después de un tiempo) ---
         if self.boss_display_frames > 0:
             self.boss_display_frames -= 1
+            if self.boss_right.is_visible: self.boss_right.animate()
+            if self.boss_left.is_visible: self.boss_left.animate()
             if self.boss_display_frames == 0:
-                self.boss.hide()
+                self.boss_right.hide()
+                self.boss_left.hide()
 
         # --- Actualizar camión ---
         self.truck.update()
@@ -224,11 +278,19 @@ class Board:
         # --- Actualizar contador de descanso ---
         if self.break_time > 0:
             self.break_time -= 1
+            
+            # Mostrar bosses cuando quedan 2 segundos (60 frames)
+            if self.break_time == 60:
+                 self.boss_right.show()
+                 self.boss_left.show()
+                 self.boss_display_frames = 60 # Mantenerlos visibles hasta el final del descanso
+                 
             if self.break_time == 0:
                 print("¡Descanso terminado! Continúa el juego")
-                # Mostrar al boss al final del descanso
-                self.boss.show()
-                self.boss_display_frames = 90  # Mostrar al boss por 3 segundos
+                # Ocultar bosses al terminar el descanso
+                self.boss_right.hide()
+                self.boss_left.hide()
+                self.boss_display_frames = 0
             return  # No procesar el paquete durante el descanso
 
         # --- LÓGICA DE APARICIÓN DE PAQUETES ---
@@ -294,6 +356,11 @@ class Board:
         except RuntimeError as e:
             # Se cayó un paquete
             print(f"\n{e}")
+            
+            # Activar parpadeo de vida antes de perderla
+            self.life_being_lost = True
+            self.life_blink_timer = 60  # Parpadear por 2 segundos (60 frames a 30fps)
+            
             self.lives -= 1
             print(f"Vidas restantes: {self.lives}\n")
             
@@ -320,16 +387,12 @@ class Board:
             
             # Posicionar boss
             if culprit == "mario":
-                self.boss.x = constants.MARIO_FAIL[0]
-                self.boss.y = constants.MARIO_FAIL[1]
-                self.boss.flipped = True  # Voltear el sprite para Mario
+                self.boss_right.show()
             else:
-                self.boss.x = constants.LUIGI_FAIL[0]
-                self.boss.y = constants.LUIGI_FAIL[1]
-                self.boss.flipped = False  # No voltear para Luigi
+                self.boss_left.show()
 
             # Mostrar al boss regañando
-            self.boss.show()
+            # self.boss.show()
             # self.boss_display_frames = 90  # YA NO SE USA, ahora usamos freeze_timer
             
             # ACTIVAR CONGELACIÓN
@@ -440,24 +503,33 @@ class Board:
             diff_label_x = (self.width - len(diff_label) * 4) // 2
             pyxel.text(diff_label_x, diff_y, diff_label, 6)
             
-            # Mostrar Easy, Medium, y Extreme con indicadores
+            # Mostrar Easy, Medium, Extreme, Crazy con indicadores
             easy_text = "EASY"
             medium_text = "MED"
             extreme_text = "EXT"
+            crazy_text = "CRAZY"
             
-            # Posiciones ajustadas para 3 opciones
-            easy_x = self.width // 2 - 40
-            medium_x = self.width // 2 - 8
-            extreme_x = self.width // 2 + 20
+            # Posiciones ajustadas para 4 opciones
+            # Ancho total aprox: 30 + 20 + 20 + 30 = 100px
+            # Centro = self.width // 2
+            start_x = self.width // 2 - 60
+            
+            easy_x = start_x
+            medium_x = start_x + 30
+            extreme_x = start_x + 55
+            crazy_x = start_x + 80
             
             # Colorear según selección
             easy_color = 10 if self.difficulty_selection == 0 else 13
             medium_color = 10 if self.difficulty_selection == 1 else 13
             extreme_color = 10 if self.difficulty_selection == 2 else 13
+            crazy_color = 10 if self.difficulty_selection == 3 else 13 # 8=Rojo para Crazy? 10=Amarillo, 13=Gris
+            if self.difficulty_selection == 3: crazy_color = 8 # Rojo para Crazy seleccionado
             
             pyxel.text(easy_x, diff_y + 10, easy_text, easy_color)
             pyxel.text(medium_x, diff_y + 10, medium_text, medium_color)
             pyxel.text(extreme_x, diff_y + 10, extreme_text, extreme_color)
+            pyxel.text(crazy_x, diff_y + 10, crazy_text, crazy_color)
             
             # Flechas indicadoras <  >
             if self.difficulty_selection == 0:
@@ -466,9 +538,12 @@ class Board:
             elif self.difficulty_selection == 1:
                 pyxel.text(medium_x - 8, diff_y + 10, "<", 10)
                 pyxel.text(medium_x + len(medium_text) * 4 + 2, diff_y + 10, ">", 10)
-            else:
+            elif self.difficulty_selection == 2:
                 pyxel.text(extreme_x - 8, diff_y + 10, "<", 10)
                 pyxel.text(extreme_x + len(extreme_text) * 4 + 2, diff_y + 10, ">", 10)
+            else:
+                pyxel.text(crazy_x - 8, diff_y + 10, "<", 8)
+                pyxel.text(crazy_x + len(crazy_text) * 4 + 2, diff_y + 10, ">", 8)
             
             return  # No dibujar el resto del juego
             
@@ -520,14 +595,16 @@ class Board:
         pyxel.blt(self.truck.x, self.truck.y, *self.truck.sprite)
         
         # Drawing Boss (solo si es visible)
-        if self.boss.is_visible:
-            # Si el boss está volteado (Mario falló), usar ancho negativo
-            img, u, v, w, h = self.boss.sprite
-            if self.boss.flipped:
-                # Voltear horizontalmente usando ancho negativo
-                pyxel.blt(self.boss.x, self.boss.y, img, u, v, -w, h)
-            else:
-                pyxel.blt(self.boss.x, self.boss.y, img, u, v, w, h)
+        # Drawing Bosses
+        if self.boss_right.is_visible:
+            img, u, v, w, h = self.boss_right.sprite
+            # Boss right is flipped (looking left)
+            pyxel.blt(self.boss_right.x, self.boss_right.y, img, u, v, -w, h, colkey=0)
+            
+        if self.boss_left.is_visible:
+            img, u, v, w, h = self.boss_left.sprite
+            # Boss left is normal (looking right)
+            pyxel.blt(self.boss_left.x, self.boss_left.y, img, u, v, w, h, colkey=0)
             # Mostrar mensaje de regaño
 
         
@@ -535,6 +612,12 @@ class Board:
         #pyxel.text(5, 5, f"VIDAS: {self.lives}", 7)
         for i in range(self.lives):
             pyxel.blt(225 + i * 15, 20, *constants.LIVE_SPRITE)
+        
+        # Mostrar vida que está parpadeando (la que se está perdiendo)
+        if self.life_being_lost and self.life_blink_timer > 0:
+            # Parpadear cada 5 frames (alternar visible/invisible)
+            if (self.life_blink_timer // 5) % 2 == 0:
+                pyxel.blt(225 + self.lives * 15, 20, *constants.LIVE_SPRITE)
 
         # Mostrar puntuación en pantalla
         pyxel.text(10, 5, f"PUNTOS: {self.score}", 7)
@@ -554,7 +637,10 @@ class Board:
         # Mostrar mensaje de descanso si está activo
         if self.break_time > 0:
             seconds_left = self.break_time // 30
-            pyxel.text(100, 50, f"DESCANSO: {seconds_left}s", 10)
+            break_text = f"DESCANSO: {seconds_left}s"
+            # Centrar horizontalmente en la parte superior
+            text_x = (self.width - len(break_text) * 4) // 2
+            pyxel.text(text_x, 5, break_text, 10)
 
 
         # prueba

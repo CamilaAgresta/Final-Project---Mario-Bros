@@ -1,43 +1,36 @@
 """
-Bachelor in Data Science and Engineering 
-Subject: Programming
-Created by Camila Alba Agresta Kohen  
-Created on 30/9/25 at 22:35
-Universidad Carlos III de Madrid
-Student
-
--------
 Final Project: Super Mario Bros
 Constants
 """
-# significado tupla XXX_SPRITE
-# La tupla es (banco_img, x_en_banco, y_en_banco, ancho, alto)
+
+# Tuple meaning for XXX_SPRITE
+# The tuple is (bank_img, x_in_bank, y_in_bank, width, height)
 
 # ---------------------------------
 # Dimension of the screen
 WIDTH = 288
 HIGH = 118
-DISPLAY_SCALE = 8  # Aumentado para pantalla más grande
+DISPLAY_SCALE = 8  # Increased for larger screen
 
 # ---------------------------------
-# Fondo
-BACKGROUND_START = (16,16)
+# Background
+BACKGROUND_START = (16, 16)
 BACKGROUND_SPRITE = (1, 0, 0, 256, 100)
 INVISIBLE_ZONE_X = (125, 162)
 
 # ---------------------------------
 # MARIO
 MARIO_START = (215, 83)
-MARIO_SPRITE = (0, 0, 0, 12, 16) #12 de ancho x 16 de alto, Mario ocupa el primer cuadrante
+MARIO_SPRITE = (0, 0, 0, 12, 16)  # 12 width x 16 height, Mario occupies the first quadrant
 
-# Posiciones Y permitidas para Mario (de arriba a abajo: 39, 61, 83)
+# Allowed Y positions for Mario (from top to bottom: 39, 61, 83)
 MARIO_Y_POSITIONS = (39, 61, 83)
 
 # ---------------------------------
 # LUIGI
 LUIGI_START = (60, 72)
 LUIGI_SPRITE = (0, 0, 16, 12, 16)
-# Posiciones Y permitidas para Luigi (de arriba a abajo: 28, 50, 72)
+# Allowed Y positions for Luigi (from top to bottom: 28, 50, 72)
 LUIGI_Y_POSITIONS = (28, 50, 72)
 
 # ---------------------------------
@@ -50,64 +43,61 @@ CONVEYOR_Y = (83, 72, 61, 50, 39)
 
 # ---------------------------------
 # PACKAGE
-PACKAGE_START = (260, 83)  # Empieza en CONVEYOR 0 (parte derecha, 2 píxeles más arriba)
+PACKAGE_START = (260, 83)  # Starts at CONVEYOR 0 (right side, 2 pixels higher)
 
-# Sprites del paquete (cambian al pasar por zonas invisibles)
-PACKAGE_SPRITE_1 = (0, 27, 6, 11, 5)   # Sprite inicial
-PACKAGE_SPRITE_2 = (0, 27, 14, 11, 5)  # Sprite después de 1ra vez invisible
-PACKAGE_SPRITE_3 = (0, 29, 22, 7, 5)  # Sprite después de 2da vez invisible
+# Package sprites (change when passing through invisible zones)
+PACKAGE_SPRITE_1 = (0, 27, 6, 11, 5)   # Initial sprite
+PACKAGE_SPRITE_2 = (0, 27, 14, 11, 5)  # Sprite after 1st time invisible
+PACKAGE_SPRITE_3 = (0, 29, 22, 7, 5)   # Sprite after 2nd time invisible
 
-# Sprite por defecto (para compatibilidad)
+# Default sprite (for compatibility)
 PACKAGE_SPRITE = PACKAGE_SPRITE_1
 
-# Posiciones Y de las cintas transportadoras
-# IMPORTANTE: CINTA 0 y CINTA 1 comparten la misma Y (85) pero diferentes rangos X
-PACKAGE_Y_POSITIONS = (39, 50, 61, 72, 83)  # 5 alturas diferentes (2 píxeles más arriba)
-PACKAGE_WAIT_FRAMES = 2 # cuanto más grande va más lento
+# Y positions of the conveyor belts
+# IMPORTANT: CONVEYOR 0 and CONVEYOR 1 share the same Y (85) but different X ranges
+PACKAGE_Y_POSITIONS = (39, 50, 61, 72, 83)  # 5 different heights (2 pixels higher)
+PACKAGE_WAIT_FRAMES = 2  # The larger, the slower
 
-# coordenadas Y paquete sobre cinta transportadora
-# cinta0 = 83 (index 4) - parte DERECHA (x > 229)
-# cinta1 = 83 (index 4) - parte IZQUIERDA (83 <= x <= 204) 
-# cinta2 = 72 (index 3)
-# cinta3 = 61 (index 2)
-# cinta4 = 50 (index 1)
-# cinta5 = 39 (index 0)
+# Package Y coordinates on conveyor belt
+# conveyor0 = 83 (index 4) - RIGHT side (x > 229)
+# conveyor1 = 83 (index 4) - LEFT side (83 <= x <= 204)
+# conveyor2 = 72 (index 3)
+# conveyor3 = 61 (index 2)
+# conveyor4 = 50 (index 1)
+# conveyor5 = 39 (index 0)
 
-# coordenadas X segun cinta transportadora
-# cinta 0 -> x > 229 (parte derecha, antes de Mario)
-# cinta 1 -> 83 <= x <= 204 (parte izquierda, después de Mario)
-# cinta 2 y 4 -> 80 < X < 201
-# cinta 3 y 5 -> 83 < X < 204
+# X coordinates according to conveyor belt
+# conveyor 0 -> x > 229 (right side, before Mario)
+# conveyor 1 -> 83 <= x <= 204 (left side, after Mario)
+# conveyor 2 and 4 -> 80 < X < 201
+# conveyor 3 and 5 -> 83 < X < 204
 
-# POSITIONS PACKAGES AT TRUCK (camión quieto)
-# paquete 1 -> x = 36, y = 60
-# paquete 2 -> x = 41, y = 60
-
-#PACKAGE_TRUCK_X = (36,41)
-#PACKAGE_TRUCK_Y = (60,56,52,48)
+# POSITIONS PACKAGES AT TRUCK (truck still)
+# package 1 -> x = 36, y = 60
+# package 2 -> x = 41, y = 60
 
 TRUCK_PACKAGE_POSITIONS = [
-    (36, 58), # Paquete 1 (índice 0) - 2 píxeles más arriba
-    (41, 58), # Paquete 2 (índice 1) - 2 píxeles más arriba
-    (36, 54), # Paquete 3 (índice 2) - 2 píxeles más arriba
-    (41, 54), # Paquete 4 (índice 3) - 2 píxeles más arriba
-    (36, 50), # Paquete 5 (índice 4) - 2 píxeles más arriba
-    (41, 50), # Paquete 6 (índice 5) - 2 píxeles más arriba
-    (36, 46), # Paquete 7 (índice 6) - 2 píxeles más arriba
-    (41, 46)  # Paquete 8 (índice 7) - 2 píxeles más arriba
+    (36, 58),  # Package 1 (index 0) - 2 pixels higher
+    (41, 58),  # Package 2 (index 1) - 2 pixels higher
+    (36, 54),  # Package 3 (index 2) - 2 pixels higher
+    (41, 54),  # Package 4 (index 3) - 2 pixels higher
+    (36, 50),  # Package 5 (index 4) - 2 pixels higher
+    (41, 50),  # Package 6 (index 5) - 2 pixels higher
+    (36, 46),  # Package 7 (index 6) - 2 pixels higher
+    (41, 46)   # Package 8 (index 7) - 2 pixels higher
 ]
 
 # ---------------------------------
-# TRUCK (18 alto x 24 ancho - extendido 2 píxeles a la derecha)
-TRUCK_START = (24,52)
+# TRUCK (18 high x 24 wide - extended 2 pixels to the right)
+TRUCK_START = (24, 52)
 TRUCK_SPRITE = (0, 0, 40, 24, 18)
 
 # ---------------------------------
 # BOSS
 MARIO_FAIL = (249, 60)
 LUIGI_FAIL = (26, 83)
-BOSS_SPRITE_1 = (0, 0, 64, 12, 16)  # De momento usa el sprite de Mario
-BOSS_SPRITE_2 = (0, 16, 64, 18, 16)  # De momento usa el sprite de Mario
+BOSS_SPRITE_1 = (0, 0, 64, 12, 16)  # Currently uses Mario's sprite
+BOSS_SPRITE_2 = (0, 16, 64, 18, 16)  # Currently uses Mario's sprite
 
 # ---------------------------------
 # LIVE

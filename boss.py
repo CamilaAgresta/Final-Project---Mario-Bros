@@ -1,35 +1,26 @@
 """
-Bachelor in Data Science and Engineering 
-Subject: Programming
-Created by Camila Alba Agresta Kohen  
-Created on 21/11/25
-Universidad Carlos III de Madrid
-Student
-
--------
-Final project
-
-Clase Boss
-El jefe que regaña a Mario y Luigi cuando se cae un paquete
+Boss Class
+The boss who scolds Mario and Luigi when a package falls.
 """
+
 import constants
 
 class Boss:
+    """Represents the boss character."""
+
     def __init__(self, x: int, y: int):
-        """ This method creates the Boss object
-        :param x : the initial x of the boss
-        :param y : the initial y of the boss
+        """
+        Initializes the Boss object.
+        :param x: The initial x coordinate of the boss
+        :param y: The initial y coordinate of the boss
         """
         self.x = x
         self.y = y
-        # De momento usa el sprite de Mario hasta que se cree el diseño del boss
-        # De momento usa el sprite de Mario hasta que se cree el diseño del boss
         self.sprite = constants.BOSS_SPRITE_1
         self.animation_frame = 0
-        self.is_visible = False  # El boss solo aparece cuando se cae un paquete
-        self.flipped = False  # Si es True, el sprite se voltea horizontalmente
+        self.is_visible = False  # The boss only appears when a package falls
+        self.flipped = False  # If True, the sprite is flipped horizontally
 
-    # Creating properties and setters for the Boss's attributes
     @property
     def x(self) -> int:
         return self.__x
@@ -45,18 +36,18 @@ class Boss:
     @x.setter
     def x(self, x: int):
         if not isinstance(x, int):
-            raise TypeError ("The x must be an integer " + str(type(x)) + "is provided")
+            raise TypeError(f"The x must be an integer, {type(x)} provided")
         elif x < 0:
-            raise ValueError("The x must be a non negative number")
+            raise ValueError("The x must be a non-negative number")
         else:
             self.__x = x
 
     @y.setter
     def y(self, y: int):
         if not isinstance(y, int):
-            raise TypeError ("The y must be an integer " + str(type(y)) + "is provided")
+            raise TypeError(f"The y must be an integer, {type(y)} provided")
         elif y < 0:
-            raise ValueError("The y must be a non negative number")
+            raise ValueError("The y must be a non-negative number")
         else:
             self.__y = y
 
@@ -68,17 +59,17 @@ class Boss:
             self.__is_visible = visible
 
     def show(self):
-        """Muestra al boss en pantalla"""
+        """Shows the boss on the screen."""
         self.is_visible = True
 
     def hide(self):
-        """Oculta al boss de la pantalla"""
+        """Hides the boss from the screen."""
         self.is_visible = False
 
     def animate(self):
-        """Alterna entre los dos sprites del boss para crear animación"""
+        """Alternates between the two boss sprites to create animation."""
         self.animation_frame += 1
-        if self.animation_frame % 10 == 0:  # Cambiar cada 10 frames (ajustar velocidad)
+        if self.animation_frame % 10 == 0:  # Change every 10 frames
             if self.sprite == constants.BOSS_SPRITE_1:
                 self.sprite = constants.BOSS_SPRITE_2
             else:

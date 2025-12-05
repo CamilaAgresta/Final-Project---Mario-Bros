@@ -1,14 +1,6 @@
 """
-Bachelor in Data Science and Engineering 
-Subject: Programming
-Created by Camila Alba Agresta Kohen  
-Created on 7/11/25 at 18:50
-Universidad Carlos III de Madrid
-Student
-
--------
 Mario
-subclase de Character
+Subclass of Character
 """
 from character import Character
 import constants
@@ -16,43 +8,41 @@ import constants
 class Mario(Character):
     def __init__(self, x: int, y: int):
         """
-        Metodo constructor para Mario.
-        Llama al constructor de la clase padre (Character) y
-        asigna el sprite específico de Mario.
+        Constructor method for Mario.
+        Calls the parent class constructor (Character) and assigns the specific Mario sprite.
         """
-        # 1. Llama al __init__ de la clase padre (Character)
-        #    para inicializar self.x y self.y
+        # Call the __init__ of the parent class (Character)
         super().__init__(x, y)
 
-        # 2. Asigna el sprite como un ATRIBUTO
-        #    La tupla es (banco_img, x_en_banco, y_en_banco, ancho, alto)
+        # Assign the sprite as an ATTRIBUTE
+        # The tuple is (bank_img, x_in_bank, y_in_bank, width, height)
         self.sprite = constants.MARIO_SPRITE
 
-        # 3. Guarda las posiciones Y permitidas
+        # Save allowed Y positions
         self.y_positions = constants.MARIO_Y_POSITIONS
-        # 4. Guarda el índice de la posición Y actual
-        #    (Como MARIO_START es (215, 83), y 83 es el último en la tupla,
-        #    el índice inicial será 2)
+        
+        # Save the index of the current Y position
+        # (Since MARIO_START is (215, 83), and 83 is the last in the tuple, the initial index will be 2)
         try:
             self.current_y_index = self.y_positions.index(y)
         except ValueError:
-            # Si la Y inicial no está en la lista, se asigna la primera
+            # If the initial Y is not in the list, assign the first one
             self.current_y_index = 0
             self.y = self.y_positions[0]
 
     def move_vertical(self, direction: str):
-        """Mueve a Mario verticalmente entre las posiciones Y predefinidas."""
+        """Moves Mario vertically between predefined Y positions."""
 
         if direction.lower() == 'up':
-            # Mueve a una Y más pequeña (más arriba en la pantalla)
-            # Si el índice actual es > 0, puede subir
+            # Move to a smaller Y (higher on the screen)
+            # If the current index is > 0, can move up
             if self.current_y_index > 0:
                 self.current_y_index -= 1
                 self.y = self.y_positions[self.current_y_index]
 
         elif direction.lower() == 'down':
-            # Mueve a una Y más grande (más abajo en la pantalla)
-            # Si el índice actual es menor que el último índice (longitud - 1), puede bajar
+            # Move to a larger Y (lower on the screen)
+            # If the current index is less than the last index (length - 1), can move down
             if self.current_y_index < len(self.y_positions) - 1:
                 self.current_y_index += 1
                 self.y = self.y_positions[self.current_y_index]

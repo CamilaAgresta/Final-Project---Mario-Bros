@@ -1,34 +1,28 @@
 """
-Bachelor in Data Science and Engineering 
-Subject: Programming
-Created by Camila Alba Agresta Kohen  
-Created on 11/11/25 at 12:33
-Universidad Carlos III de Madrid
-Student
-
--------
-Final project
-
-Clase camión
+Truck Class
+Manages the delivery truck logic.
 """
+
 import constants
 
 class Truck:
+    """Represents the delivery truck."""
+
     def __init__(self, x: int, y: int, dir: int, truck_full: bool):
-        """ This method creates the Character object
-        :param x : the initial x of the character
-        :param y : the initial y of the character
+        """
+        Initializes the Truck object.
+        :param x: The initial x coordinate of the truck
+        :param y: The initial y coordinate of the truck
+        :param dir: Direction (unused currently)
+        :param truck_full: Initial full state (unused currently)
         """
         self.x = x
         self.y = y
-        #self.dir = dir
-        #self.truck_full = truck_full
         self.sprite = constants.TRUCK_SPRITE
-        self.packages_count = 0  # Contador de paquetes en el camión (empezar con 7 para pruebas)
-        self.is_leaving = False  # Si el camión está yendo
-        self.initial_x = x  # Guardar posición inicial
+        self.packages_count = 0  # Counter for packages in the truck
+        self.is_leaving = False  # If the truck is leaving
+        self.initial_x = x  # Save initial position
 
-    # Creating properties and setters for the Character's attributes
     @property
     def x(self) -> int:
         return self.__x
@@ -37,64 +31,39 @@ class Truck:
     def y(self) -> int:
         return self.__y
 
-    #@property
-    #def dir(self) -> int:
-        #return self.__dir
-
-    #@property
-    #def truck_full(self) -> bool:
-        #return self.__truck_full
-
     @x.setter
     def x(self, x: int):
         if not isinstance(x, int):
-            raise TypeError ("The x must be an integer " + str(type(x)) + "is provided")
-        # Permitir valores negativos para que el camión pueda salir de pantalla
+            raise TypeError(f"The x must be an integer, {type(x)} provided")
+        # Allow negative values so the truck can leave the screen
         else:
             self.__x = x
 
     @y.setter
     def y(self, y: int):
         if not isinstance(y, int):
-            raise TypeError ("The y must be an integer " + str(type(y)) + "is provided")
+            raise TypeError(f"The y must be an integer, {type(y)} provided")
         elif y < 0:
-            raise ValueError("The y must be a non negative number")
+            raise ValueError("The y must be a non-negative number")
         else:
             self.__y = y
 
-    #@dir.setter
-    #def dir(self, dir: int):
-        #if not isinstance(dir, int):
-            #raise TypeError(
-                #"The dir must be an integer " + str(type(dir)) + "is provided")
-        #elif dir < 0:
-            #raise ValueError("The dir must be a non negative number")
-        #else:
-            #self.__dir = dir
-
-    #@truck_full.setter
-    #def truck_full(self,full:bool):
-        #pass
-
     def add_package(self):
-        """Añade un paquete al camión"""
+        """Adds a package to the truck."""
         self.packages_count += 1
-        print(f"Paquete añadido al camión. Total: {self.packages_count}/8")
         if self.packages_count >= 8:
             self.is_leaving = True
-            print("¡Camión lleno! Se va...")
 
     def update(self):
-        """Actualiza el estado del camión"""
+        """Updates the truck state."""
         if self.is_leaving:
-            self.x -= 2  # El camión se mueve hacia la izquierda
-            # Si el camión sale de la pantalla, reiniciarlo
+            self.x -= 2  # The truck moves to the left
+            # If the truck leaves the screen, reset it
             if self.x < -30:
                 self.x = self.initial_x
                 self.packages_count = 0
                 self.is_leaving = False
-                print("Nuevo camión listo para recibir paquetes")
 
     def is_full(self):
-        """Verifica si el camión está lleno"""
+        """Checks if the truck is full."""
         return self.packages_count >= 8

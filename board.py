@@ -82,6 +82,53 @@ class Board:
         pyxel.load("assets/characters.pyxres")
         #pyxel.load("assets/fondo.pyxres")
 
+        # Configurar música de fondo (chiptune) - Melodía más entretenida
+        
+        # Canal 0: Melodía principal (Square wave - sonido clásico de videojuegos)
+        pyxel.sounds[0].set(
+            notes="c3e3g3e3 c3e3g3a3 f3a3c4a3 f3a3g3r "
+                  "e3g3b3g3 e3g3b3c4 d3f3a3f3 d3f3g3r",
+            tones="S",                  # S=square (sonido retro clásico)
+            volumes="6666666666666666" * 2,
+            effects="nnnnnnnnnnnnnnnn" * 2,
+            speed=12
+        )
+        
+        # Canal 1: Armonía (Triangle wave - más suave)
+        pyxel.sounds[1].set(
+            notes="c2g2c3g2 c2g2c3c3 f2c3f3c3 f2c3e3r "
+                  "e2b2e3b2 e2b2e3e3 d2a2d3a2 d2a2g2r",
+            tones="T",                  # T=triangle (más suave)
+            volumes="4444444444444444" * 2,
+            effects="nnnnnnnnnnnnnnnn" * 2,
+            speed=12
+        )
+        
+        # Canal 2: Bajo (Triangle wave - frecuencias bajas)
+        pyxel.sounds[2].set(
+            notes="c1c1c1c1 c1c1c1c1 f1f1f1f1 f1f1f1r "
+                  "e1e1e1e1 e1e1e1e1 d1d1d1d1 d1d1d1r",
+            tones="T",
+            volumes="5555555555555555" * 2,
+            effects="nnnnnnnnnnnnnnnn" * 2,
+            speed=12
+        )
+        
+        # Canal 3: Percusión (Noise - ritmo)
+        pyxel.sounds[3].set(
+            notes="c1r c1r c1r c1r " * 4,
+            tones="N",                  # N=noise (percusión)
+            volumes="5353535353535353" * 2,
+            effects="nnnnnnnnnnnnnnnn" * 2,
+            speed=12
+        )
+        
+        # Música (M0) que combina los 4 canales
+        pyxel.musics[0].set([0], [1], [2], [3])
+        
+        # Iniciar la música en loop
+        pyxel.playm(0, loop=True)
+
         # Running the game
         pyxel.run(self.update, self.draw)
 

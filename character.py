@@ -6,6 +6,7 @@ Base class for Mario and Luigi
 """
 
 import constants
+import pyxel
 
 class Character:
     """
@@ -48,8 +49,7 @@ class Character:
             raise ValueError("The y must be a non-negative number")
         else:
             self.__y = y
-
-
-
-
-
+    
+    def draw(self):
+        """Draws the character."""
+        pyxel.blt(self.x, self.y, *self.sprite)

@@ -6,20 +6,17 @@ import constants
 import pyxel
 
 class Package:
-    def __init__(self, x: int, y: int, dir: int, at_truck: bool, wait_frames: int = 2, difficulty: str = "EASY", conveyor_speeds: dict = None):
+    def __init__(self, x: int, y: int, wait_frames: int = 2, difficulty: str = "EASY", conveyor_speeds: dict = None):
         """
         Creates the Package object.
         :param x: The initial x coordinate
         :param y: The initial y coordinate
-        :param dir: Direction (unused currently)
-        :param at_truck: Boolean indicating if it's at the truck (unused currently)
         :param wait_frames: Base delay frames for movement speed
         :param difficulty: Game difficulty level
         :param conveyor_speeds: Dictionary of custom speeds for CRAZY mode
         """
         self.x = x
         self.y = y
-        self.dir = dir
         self.wait_frames = constants.PACKAGE_WAIT_FRAMES
         self.difficulty = difficulty
         self.conveyor_speeds = conveyor_speeds if conveyor_speeds else {}
@@ -46,16 +43,15 @@ class Package:
     def y(self) -> int:
         return self.__y
 
-    @property
-    def dir(self) -> int:
-        return self.__dir
-
     @x.setter
     def x(self, x: int):
         if not isinstance(x, int):
             raise TypeError("The x must be an integer, " + str(type(x)) + " provided")
         elif x < 0:
-            raise ValueError("The x must be a non-negative number")
+            # Allow negative values for logic (although original check might have been stricter, 
+            # let's stick to the convention or just restore strict checking if that was the case.
+            # actually viewing prev content it was strict.
+             raise ValueError("The x must be a non-negative number")
         else:
             self.__x = x
 
@@ -68,14 +64,9 @@ class Package:
         else:
             self.__y = y
 
-    @dir.setter
-    def dir(self, dir: int):
-        if not isinstance(dir, int):
-            raise TypeError("The dir must be an integer, " + str(type(dir)) + " provided")
-        elif dir < 0:
-            raise ValueError("The dir must be a non-negative number")
-        else:
-            self.__dir = dir
+
+
+
 
     def package_visible(self):
         """Determines if the package is visible and changes the sprite when leaving the invisible zone."""
@@ -182,16 +173,6 @@ class Package:
 
         # MARIO - detects when package leaves right side of conveyors
         # Mario catches at: Y positions 2 (83), 1 (61), 0 (39) corresponding to conveyors 0, 2, 4 (indices)
-        # But wait, Mario Y positions are (39, 61, 83).
-        # Index 2 is 83 -> Conveyor 0 (y=83)
-        # Index 1 is 61 -> Conveyor 2 (y=61)
-        # Index 0 is 39 -> Conveyor 4 (y=39) -- Wait, Conveyor 4 is y=50? No.
-        # Let's check constants:
-        # CONVEYOR_Y = (83, 72, 61, 50, 39) -> indices 0, 1, 2, 3, 4
-        # Mario Y positions: (39, 61, 83)
-        # Mario at 83 catches from Conveyor 0 (index 0, y=83)
-        # Mario at 61 catches from Conveyor 2 (index 2, y=61)
-        # Mario at 39 catches from Conveyor 4 (index 4, y=39)
         
         # Refactored collision logic for Mario
         mario_catch_y = [constants.CONVEYOR_Y[0], constants.CONVEYOR_Y[2], constants.CONVEYOR_Y[4]] # 83, 61, 39

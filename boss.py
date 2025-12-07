@@ -4,6 +4,7 @@ The boss who scolds Mario and Luigi when a package falls.
 """
 
 import constants
+import pyxel
 
 class Boss:
     """Represents the boss character."""
@@ -74,3 +75,11 @@ class Boss:
                 self.sprite = constants.BOSS_SPRITE_2
             else:
                 self.sprite = constants.BOSS_SPRITE_1
+
+    def draw(self):
+        """Draws the boss."""
+        if self.is_visible:
+            img, u, v, w, h = self.sprite
+            # If flipped, width is negative
+            width = -w if self.flipped else w
+            pyxel.blt(self.x, self.y, img, u, v, width, h, colkey=0)

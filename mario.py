@@ -56,5 +56,10 @@ class Mario(Character):
             # first position  → normal sprite
             self.sprite = constants.MARIO_SPRITE
 
+    def draw(self):
+        """Draws Mario, checking flip state first."""
+        self.flipped()
+        super().draw()
+
 
 

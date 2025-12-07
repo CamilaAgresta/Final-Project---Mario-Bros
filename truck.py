@@ -4,17 +4,16 @@ Manages the delivery truck logic.
 """
 
 import constants
+import pyxel
 
 class Truck:
     """Represents the delivery truck."""
 
-    def __init__(self, x: int, y: int, dir: int, truck_full: bool):
+    def __init__(self, x: int, y: int):
         """
         Initializes the Truck object.
         :param x: The initial x coordinate of the truck
         :param y: The initial y coordinate of the truck
-        :param dir: Direction (unused currently)
-        :param truck_full: Initial full state (unused currently)
         """
         self.x = x
         self.y = y
@@ -67,3 +66,15 @@ class Truck:
     def is_full(self):
         """Checks if the truck is full."""
         return self.packages_count >= 8
+
+    def draw(self):
+        """Draws the truck and its packages."""
+        # Draw Truck
+        pyxel.blt(self.x, self.y, *self.sprite)
+
+        # Draw Packages in Truck
+        truck_offset_x = self.x - constants.TRUCK_START[0]
+        limit = min(self.packages_count, 8)
+        for i in range(limit):
+            base_x, base_y = constants.TRUCK_PACKAGE_POSITIONS[i]
+            pyxel.blt(base_x + truck_offset_x, base_y, *constants.PACKAGE_SPRITE_3)

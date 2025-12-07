@@ -32,7 +32,7 @@ class Board:
         self.mario = Mario(constants.MARIO_START[0], constants.MARIO_START[1])
         self.luigi = Luigi(constants.LUIGI_START[0], constants.LUIGI_START[1])
         self.background = Background(constants.BACKGROUND_START[0], constants.BACKGROUND_START[1])
-        self.truck = Truck(constants.TRUCK_START[0], constants.TRUCK_START[1], 0, False)
+        self.truck = Truck(constants.TRUCK_START[0], constants.TRUCK_START[1])
         self.boss_right = Boss(constants.MARIO_FAIL[0], constants.MARIO_FAIL[1])
         self.boss_left = Boss(constants.LUIGI_FAIL[0], constants.LUIGI_FAIL[1])
         self.boss_right.flipped = True  # Mario side (right) needs flip
@@ -53,7 +53,7 @@ class Board:
         self.menu_selection = 0  # 0 = Play, 1 = Quit
         self.difficulty_selection = 0  # 0 = Easy, 1 = Medium
         self.difficulty = "EASY"  # Set when game starts
-        self.deliveries_count = 0  # Successful deliveries count (for life recovery in Medium)
+        self.consecutive_trucks = 0  # Count of full trucks departing (for life recovery)
         self.conveyor_speeds = {}  # Dictionary for random speeds in CRAZY mode
 
         # System of packages
@@ -156,7 +156,7 @@ class Board:
         self.break_time = 0
         self.is_frozen = False
         self.freeze_timer = 0
-        self.deliveries_count = 0
+        self.consecutive_trucks = 0
         self.life_blink_timer = 0
         self.life_being_lost = False
         self.boss_right.hide()
@@ -184,7 +184,7 @@ class Board:
                 self.spawn_timer -= 1
             else:
                 # Create new package
-                new_package = Package(constants.PACKAGE_START[0], constants.PACKAGE_START[1], 0, False, wait_frames=1, difficulty=self.difficulty, conveyor_speeds=self.conveyor_speeds)
+                new_package = Package(constants.PACKAGE_START[0], constants.PACKAGE_START[1], wait_frames=1, difficulty=self.difficulty, conveyor_speeds=self.conveyor_speeds)
                 self.packages.append(new_package)
                 self.pending_spawns -= 1
                 # If more packages pending, set timer
@@ -311,20 +311,26 @@ class Board:
                 elif passed_package == "to_truck":
                     self.truck.add_package()
                     packages_to_remove.append(pkg)
-                    
-                    # Life recovery in MEDIUM mode
-                    if self.difficulty == "MEDIUM":
-                        self.deliveries_count += 1
-                        if self.deliveries_count >= 5:
-                            self.deliveries_count = 0
-                            if self.lives < 3:
-                                self.lives += 1
 
                     # If truck is full
                     if self.truck.is_full():
                         self.score += 10
                         self.break_time = 300
                         self.packages = []  # Clear packages
+                        
+                        # --- LIFE RECOVERY LOGIC ---
+                        # Only recover life if difficulty is NOT Crazy
+                        if self.difficulty != "CRAZY":
+                            self.consecutive_trucks += 1
+                            
+                            # Threshold depends on difficulty
+                            threshold = 3 if self.difficulty == "EASY" else 5
+                            
+                            if self.consecutive_trucks >= threshold:
+                                self.consecutive_trucks = 0
+                                if self.lives < 3:
+                                    self.lives += 1
+
                         return  # Exit update
 
                     # If truck NOT full and NO packages left...
@@ -529,9 +535,8 @@ class Board:
         pyxel.blt(self.background.x, self.background.y, *self.background.sprite)
         
         # Draw Characters
-        self.mario.flipped()
-        pyxel.blt(self.mario.x, self.mario.y, *self.mario.sprite)
-        pyxel.blt(self.luigi.x, self.luigi.y, *self.luigi.sprite)
+        self.mario.draw()
+        self.luigi.draw()
         
         # Draw Packages
         for pkg in self.packages:
@@ -539,21 +544,16 @@ class Board:
                 pkg.draw()
         
         # Draw Truck
-        pyxel.blt(self.truck.x, self.truck.y, *self.truck.sprite)
+        self.truck.draw()
         
         # Draw Bosses
-        if self.boss_right.is_visible:
-            img, u, v, w, h = self.boss_right.sprite
-            pyxel.blt(self.boss_right.x, self.boss_right.y, img, u, v, -w, h, colkey=0)
-            
-        if self.boss_left.is_visible:
-            img, u, v, w, h = self.boss_left.sprite
-            pyxel.blt(self.boss_left.x, self.boss_left.y, img, u, v, w, h, colkey=0)
+        self.boss_right.draw()
+        self.boss_left.draw()
         
         # Draw Lives
         for i in range(self.lives):
             pyxel.blt(225 + i * 15, 20, *constants.LIVE_SPRITE)
-        
+
         # Blinking life
         if self.life_being_lost and self.life_blink_timer > 0:
             if (self.life_blink_timer // 5) % 2 == 0:
@@ -561,13 +561,6 @@ class Board:
 
         # Draw Score
         pyxel.text(10, 5, f"POINTS: {self.score}", 7)
-        
-        # Draw Packages in Truck
-        truck_offset_x = self.truck.x - constants.TRUCK_START[0]
-        limit = min(self.truck.packages_count, 8)
-        for i in range(limit):
-            base_x, base_y = constants.TRUCK_PACKAGE_POSITIONS[i]
-            pyxel.blt(base_x + truck_offset_x, base_y, *constants.PACKAGE_SPRITE_3)
         
         # Draw Break Message
         if self.break_time > 0:

@@ -17,6 +17,7 @@ class Mario(Character):
         # Assign the sprite as an ATTRIBUTE
         # The tuple is (bank_img, x_in_bank, y_in_bank, width, height)
         self.sprite = constants.MARIO_SPRITE
+        self.sprite_flip = constants.MARIO_SPRITE_FLIP
 
         # Save allowed Y positions
         self.y_positions = constants.MARIO_Y_POSITIONS
@@ -46,4 +47,14 @@ class Mario(Character):
             if self.current_y_index < len(self.y_positions) - 1:
                 self.current_y_index += 1
                 self.y = self.y_positions[self.current_y_index]
+
+    def flipped(self):
+        if self.y in (constants.MARIO_Y_POSITIONS[0], constants.MARIO_Y_POSITIONS[1]):
+            # Mario in the secon or third position
+            self.sprite = self.sprite_flip
+        else:
+            # first position  → normal sprite
+            self.sprite = constants.MARIO_SPRITE
+
+
 

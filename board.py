@@ -189,7 +189,7 @@ class Board:
                 self.pending_spawns -= 1
                 # If more packages pending, set timer
                 if self.pending_spawns > 0:
-                    self.spawn_timer = 40
+                    self.spawn_timer = 70
 
     def update_menu(self):
         """Handles menu logic."""
@@ -529,6 +529,7 @@ class Board:
         pyxel.blt(self.background.x, self.background.y, *self.background.sprite)
         
         # Draw Characters
+        self.mario.flipped()
         pyxel.blt(self.mario.x, self.mario.y, *self.mario.sprite)
         pyxel.blt(self.luigi.x, self.luigi.y, *self.luigi.sprite)
         

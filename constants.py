@@ -16,12 +16,13 @@ DISPLAY_SCALE = 8  # Increased for larger screen
 # Background
 BACKGROUND_START = (16, 16)
 BACKGROUND_SPRITE = (1, 0, 0, 256, 100)
-INVISIBLE_ZONE_X = (125, 162)
+INVISIBLE_ZONE_X = (126, 162)
 
 # ---------------------------------
 # MARIO
 MARIO_START = (215, 83)
 MARIO_SPRITE = (0, 0, 0, 12, 16)  # 12 width x 16 height, Mario occupies the first quadrant
+MARIO_SPRITE_FLIP = (0, 13, 0, 12, 16)
 
 # Allowed Y positions for Mario (from top to bottom: 39, 61, 83)
 MARIO_Y_POSITIONS = (39, 61, 83)
@@ -96,8 +97,8 @@ TRUCK_SPRITE = (0, 0, 40, 24, 18)
 # BOSS
 MARIO_FAIL = (249, 60)
 LUIGI_FAIL = (26, 83)
-BOSS_SPRITE_1 = (0, 0, 64, 12, 16)  # Currently uses Mario's sprite
-BOSS_SPRITE_2 = (0, 16, 64, 18, 16)  # Currently uses Mario's sprite
+BOSS_SPRITE_1 = (0, 0, 64, 12, 16)
+BOSS_SPRITE_2 = (0, 16, 64, 18, 16)
 
 # ---------------------------------
 # LIVE

@@ -59,23 +59,18 @@ PACKAGE_SPRITE = PACKAGE_SPRITE_1
 PACKAGE_Y_POSITIONS = (39, 50, 61, 72, 83)  # 5 different heights (2 pixels higher)
 PACKAGE_WAIT_FRAMES = 2  # The larger, the slower
 
-# Package Y coordinates on conveyor belt
-# conveyor0 = 83 (index 4) - RIGHT side (x > 229)
-# conveyor1 = 83 (index 4) - LEFT side (83 <= x <= 204)
+# Package Y coordinates on conveyor belt (Logic reference)
+# conveyor0 = 83 (index 4) - RIGHT side
+# conveyor1 = 83 (index 4) - LEFT side
 # conveyor2 = 72 (index 3)
 # conveyor3 = 61 (index 2)
 # conveyor4 = 50 (index 1)
 # conveyor5 = 39 (index 0)
 
-# X coordinates according to conveyor belt
-# conveyor 0 -> x > 229 (right side, before Mario)
-# conveyor 1 -> 83 <= x <= 204 (left side, after Mario)
-# conveyor 2 and 4 -> 80 < X < 201
-# conveyor 3 and 5 -> 83 < X < 204
-
-# POSITIONS PACKAGES AT TRUCK (truck still)
-# package 1 -> x = 36, y = 60
-# package 2 -> x = 41, y = 60
+# X range reference:
+# right side -> x > 229
+# left side -> 83 <= x <= 204
+# middle part -> 80 < X < 201
 
 TRUCK_PACKAGE_POSITIONS = [
     (36, 58),  # Package 1 (index 0) - 2 pixels higher

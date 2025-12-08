@@ -51,7 +51,7 @@ class Board:
         # Game state management
         self.game_state = "MENU"  # Can be: "MENU", "PLAYING", "GAME_OVER"
         self.menu_selection = 0  # 0 = Play, 1 = Quit
-        self.difficulty_selection = 0  # 0 = Easy, 1 = Medium
+        self.difficulty_selection = 0  # 0 = Easy, 1 = Medium, 2 = Extreme, 3 = Crazy
         self.difficulty = "EASY"  # Set when game starts
         self.consecutive_trucks = 0  # Count of full trucks departing (for life recovery)
         self.conveyor_speeds = {}  # Dictionary for random speeds in CRAZY mode
@@ -131,8 +131,8 @@ class Board:
             threshold = 20
             extra_packages = (self.score // threshold) * 2
         else:
-            # Easy: +1 package every 20 points, Medium/Extreme: +1 package every 30 points
-            threshold = 20 if self.difficulty == "EASY" else 30
+            # Easy: +1 package every 50 points, Medium/Extreme: +1 package every 30 points
+            threshold = 50 if self.difficulty == "EASY" else 30
             extra_packages = self.score // threshold
 
         # 2. Base is 1 package + extras
@@ -250,7 +250,7 @@ class Board:
                     return
                 
                 # Reset failed package batch
-                self.packages = []
+                # Schedule new packages to maintain flow, but keep existing ones
                 self.schedule_new_packages()
             return # STOP REST OF GAME UPDATE
 
@@ -316,7 +316,7 @@ class Board:
                     if self.truck.is_full():
                         self.score += 10
                         self.break_time = 300
-                        self.packages = []  # Clear packages
+                        # Packages remain frozen during break (not cleared)
                         
                         # --- LIFE RECOVERY LOGIC ---
                         # Only recover life if difficulty is NOT Crazy
@@ -352,6 +352,8 @@ class Board:
         except RuntimeError as e:
             # Package fell
             print(f"\n{e}")
+            if pkg in self.packages:
+                self.packages.remove(pkg)
             
             # Activate life blink
             self.life_being_lost = True
